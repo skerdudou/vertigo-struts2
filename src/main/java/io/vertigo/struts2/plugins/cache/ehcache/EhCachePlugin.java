@@ -79,7 +79,8 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	public void addCache(final String context, final CacheConfig cacheConfig) {
 		if (!manager.cacheExists(context)) {
 			final boolean overflowToDisk = true;
-			final net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache(context, cacheConfig.getMaxElementsInMemory(), overflowToDisk, cacheConfig.isEternal(), cacheConfig.getTimeToLiveSeconds(), cacheConfig.getTimeToIdleSeconds());
+			final boolean eternal = false;
+			final net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache(context, cacheConfig.getMaxElementsInMemory(), overflowToDisk, eternal, cacheConfig.getTimeToLiveSeconds(), cacheConfig.getTimeToIdleSeconds());
 			manager.addCache(cache);
 		}
 		registerCacheType(context, cacheConfig.getCacheType());
