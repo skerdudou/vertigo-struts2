@@ -179,7 +179,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 		UiObject<D> uiObject = uiObjectById.get(keyValueAsString);
 		if (uiObject == null) {
 			final DtField dtField = getDtDefinition().getField(StringUtil.camelToConstCase(keyFieldName));
-			Assertion.checkArgument(dtField.getType() == FieldType.PRIMARY_KEY, "La clé {0} de la liste doit être la PK", keyFieldName);
+			Assertion.checkArgument(dtField.getType() == FieldType.ID, "La clé {0} de la liste doit être la PK", keyFieldName);
 
 			final Object key = dtField.getDomain().getFormatter().stringToValue(keyValueAsString, dtField.getDomain().getDataType());
 			final D dto = loadDto(key);
