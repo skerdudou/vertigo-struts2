@@ -58,7 +58,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	/** {@inheritDoc} */
 	@Override
 	protected void initContext() {
-		// rien
+		//
 	}
 
 	/**
@@ -69,21 +69,20 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	public <D extends DtObject> String searchFullText() {
 		final String searchString = termRef.get();
 		final Object contextList = getModel().get(listRef.get());
-		final DtList<D> list;
-		if (contextList instanceof UiList) {
-			list = ((UiList<D>) contextList).flush();
-		} else {
+		if (!(contextList instanceof UiList)) {
 			throw new VUserException(new MessageText("La liste n'est pas du bon type {0}", null, listRef.get()));
 		}
-
+		final DtList<D> list = ((UiList<D>) contextList).flush();
 		final DtDefinition dtDefinition = list.getDefinition();
+		//-----
 		final DtField keyField;
-		final DtField labelField;
 		if (listKeyRef.exists()) {
 			keyField = dtDefinition.getField(StringUtil.camelToConstCase(listKeyRef.get()));
 		} else {
 			keyField = dtDefinition.getIdField().get();
 		}
+		//-----
+		final DtField labelField;
 		if (listValueRef.exists()) {
 			labelField = dtDefinition.getField(StringUtil.camelToConstCase(listValueRef.get()));
 		} else {
@@ -108,17 +107,18 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		String sep = "";
 		sb.append("[");
 		for (final DtObject dto : dtList) {
-			sb.append(sep);
-			sb.append("{\"key\":");
-			sb.append("\"");
 			final Object keyValue = keyField.getDataAccessor().getValue(dto);
-			sb.append(keyValue);
-			sb.append("\",\"value\":");
-			sb.append("\"");
 			final String labelValue = (String) labelField.getDataAccessor().getValue(dto);
 			final String labelEncoded = jsonEncode(labelValue);
-			sb.append(labelEncoded);
-			sb.append("\"}");
+			sb
+					.append(sep)
+					.append("{\"key\":")
+					.append("\"")
+					.append(keyValue)
+					.append("\",\"value\":")
+					.append("\"")
+					.append(labelEncoded)
+					.append("\"}");
 			sep = ", ";
 		}
 		sb.append("]");
@@ -126,8 +126,8 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	}
 
 	private static String jsonEncode(final String json) {
-		String jsonEncoded = json.replaceAll("([\"\\\\])", "\\\\$1");// " => \" et \ => \\ (ils sont echappés avec \ devant)
-		jsonEncoded = jsonEncoded.replaceAll("\n", "|");// \n => | (interdit en json)
-		return jsonEncoded;
+		return json
+				.replaceAll("([\"\\\\])", "\\\\$1")// " => \" et \ => \\ (ils sont echappés avec \ devant)
+				.replaceAll("\n", "|");// \n => | (interdit en json)
 	}
 }

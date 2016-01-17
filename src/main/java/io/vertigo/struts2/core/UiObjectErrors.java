@@ -40,8 +40,6 @@ public final class UiObjectErrors {
 	private final Map<DtField, List<MessageText>> fieldsErrors = new LinkedHashMap<>();
 	private final DtObject dtObject;
 
-	// ==========================================================================
-
 	UiObjectErrors(final DtObject dtObject) {
 		this.dtObject = dtObject;
 	}
