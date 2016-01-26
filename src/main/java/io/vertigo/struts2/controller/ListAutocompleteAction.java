@@ -75,11 +75,11 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		final DtList<D> list = ((UiList<D>) contextList).flush();
 		final DtDefinition dtDefinition = list.getDefinition();
 		//-----
-		final DtField keyField;
+		final DtField idField;
 		if (listKeyRef.exists()) {
-			keyField = dtDefinition.getField(StringUtil.camelToConstCase(listKeyRef.get()));
+			idField = dtDefinition.getField(StringUtil.camelToConstCase(listKeyRef.get()));
 		} else {
-			keyField = dtDefinition.getIdField().get();
+			idField = dtDefinition.getIdField().get();
 		}
 		//-----
 		final DtField labelField;
@@ -98,7 +98,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 			results = fullTextFilter.apply(list);
 		}
 		return createAjaxResponseBuilder()
-				.withJson(toJson(results, keyField, labelField))
+				.withJson(toJson(results, idField, labelField))
 				.send();
 	}
 

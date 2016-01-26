@@ -112,7 +112,7 @@ public final class UiUtil implements Serializable {
 
 	/**
 	 * @param uiList liste du context
-	 * @return Nom du champ de la pk de cette liste
+	 * @return Nom du champ de l'id de cette liste
 	 */
 	public static String getIdField(final AbstractUiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
