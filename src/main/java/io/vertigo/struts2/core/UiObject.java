@@ -28,7 +28,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
@@ -127,8 +126,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 			return parseMultipleValue(strValue);
 		} else if (isBoolean(dtField)) {
 			final Boolean value = (Boolean) getTypedValue(dtField);
-			final String strValue = value != null ? String.valueOf(value) : null;
-			return strValue;
+			return value != null ? String.valueOf(value) : null;
 		} else {
 			return getValueAsString(dtField);
 		}
@@ -191,9 +189,8 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @param validator Validateur à utilisé, peut-être spécifique à l'objet.
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 * @return Objet métier mis à jour
-	 * @throws VUserException Si des erreurs ont été levées
 	 */
-	public D validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) throws VUserException {
+	public D validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
 		//pour compatibilité ascendante : on check, puis on flush
 		if (!isChecked) {
 			check(validator, uiMessageStack);
@@ -204,9 +201,8 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/**
 	 * Si il n'y a pas d'erreur dans l'objet d'IHM, l'objet métier est mis à jour et retourné.
 	 * @return Objet métier mis à jour
-	 * @throws VUserException Si des erreurs ont été levées
 	 */
-	public D flush() throws VUserException {
+	public D flush() {
 		if (!isModified()) {
 			return dto;
 		}
@@ -456,19 +452,19 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** Non implémenté. */
 	@Override
 	public void clear() {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** Non implémenté. */
 	@Override
 	public boolean containsValue(final Object arg0) {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** Non implémenté. */
 	@Override
 	public Set<java.util.Map.Entry<String, Serializable>> entrySet() {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
@@ -486,13 +482,13 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** Non implémenté. */
 	@Override
 	public void putAll(final Map<? extends String, ? extends Serializable> arg0) {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** Non implémenté. */
 	@Override
 	public String remove(final Object arg0) {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
@@ -504,6 +500,6 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** Non implémenté. */
 	@Override
 	public Collection<Serializable> values() {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 }
