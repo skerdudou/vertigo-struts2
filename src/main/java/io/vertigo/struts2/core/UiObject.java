@@ -125,7 +125,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 			final String strValue = getValueAsString(dtField);
 			return parseMultipleValue(strValue);
 		} else if (isBoolean(dtField)) {
-			final Boolean value = (Boolean) getTypedValue(dtField);
+			final Boolean value = getTypedValue(dtField, Boolean.class);
 			return value != null ? String.valueOf(value) : null;
 		} else {
 			return getValueAsString(dtField);
@@ -154,12 +154,14 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @return Valeur typée du champs
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
-	Object getTypedValue(final DtField dtField) {
+	<T> T getTypedValue(final DtField dtField, final Class<T> type) {
+		Assertion.checkNotNull(dtField);
+		Assertion.checkNotNull(type);
+		//-----
 		if (hasFormatError(dtField)) {
 			throw new IllegalAccessError("Le champ " + dtField.getName() + " possède une erreur de formattage et doit être lu par son UiObject");
 		}
-		//-----
-		return doGetTypedValue(dtField);
+		return type.cast(doGetTypedValue(dtField));
 	}
 
 	/**
@@ -181,8 +183,6 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 		doSetTypedValue(constFieldName, value);
 		inputBuffer.put(constFieldName, getValueAsString(dtField));
 	}
-
-	// ==========================================================================
 
 	/**
 	 * Valide l'objet d'IHM pour mettre à jour l'objet métier.
@@ -248,7 +248,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public Integer getInteger(final String constFieldName) {
-		return (Integer) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), Integer.class);
 	}
 
 	/**
@@ -257,7 +257,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public Long getLong(final String constFieldName) {
-		return (Long) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), Long.class);
 	}
 
 	/**
@@ -266,7 +266,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	* @throws IllegalAccessError Si le champs possède une erreur de formatage
 	  */
 	public String getString(final String constFieldName) {
-		return (String) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), String.class);
 	}
 
 	/**
@@ -275,7 +275,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public Boolean getBoolean(final String constFieldName) {
-		return (Boolean) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), Boolean.class);
 	}
 
 	/**
@@ -284,7 +284,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public Date getDate(final String constFieldName) {
-		return (Date) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), Date.class);
 	}
 
 	/**
@@ -293,7 +293,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public BigDecimal getBigDecimal(final String constFieldName) {
-		return (BigDecimal) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), BigDecimal.class);
 	}
 
 	private DtField getDtField(final String constFieldName) {

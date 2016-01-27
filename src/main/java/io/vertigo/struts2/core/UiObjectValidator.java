@@ -74,7 +74,7 @@ public class UiObjectValidator<O extends DtObject> {
 
 	private void defaultCheckMonoFieldConstraints(final UiObject<O> input, final DtField dtField, final UiObjectErrors uiObjectErrors) {
 		if (!input.hasFormatError(dtField)) {
-			final Object value = input.getTypedValue(dtField);
+			final Object value = input.getTypedValue(dtField, Object.class);
 			//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
 			if (value == null && dtField.isRequired()) {
 				uiObjectErrors.addError(dtField, new MessageText(Resources.CHAMP_OBLIGATOIRE));
