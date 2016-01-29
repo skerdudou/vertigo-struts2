@@ -253,7 +253,8 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	/**
 	 * @author npiedeloup
 	 */
-	static final class RemoveTooOldElementsDaemon implements Daemon {
+	//must be public to be used by DaemonManager
+	public static final class RemoveTooOldElementsDaemon implements Daemon {
 		private static final Logger TIMER_LOGGER = Logger.getLogger(RemoveTooOldElementsDaemon.class);
 
 		private final BerkeleyContextCachePlugin berkeleyContextCachePlugin;
