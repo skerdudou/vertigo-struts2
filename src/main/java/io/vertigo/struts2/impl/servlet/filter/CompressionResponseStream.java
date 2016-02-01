@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -36,7 +37,7 @@ class CompressionResponseStream extends ServletOutputStream {
 	private OutputStream stream;
 
 	/**
-	 * Construit un servlet output stream associé avec la réponse sp�cifi�e.
+	 * Construit un servlet output stream associé avec la réponse spécifiée.
 	 * @param response javax.servlet.http.HttpServletResponse
 	 * @param compressionThreshold int
 	 */
@@ -138,5 +139,17 @@ class CompressionResponseStream extends ServletOutputStream {
 		checkBufferSize(len);
 		// write the content to the buffer
 		stream.write(bytes, off, len);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isReady() {
+		return true;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setWriteListener(final WriteListener writeListener) {
+		throw new UnsupportedOperationException("Can't setWriteListener on this ResponseStream");
 	}
 }

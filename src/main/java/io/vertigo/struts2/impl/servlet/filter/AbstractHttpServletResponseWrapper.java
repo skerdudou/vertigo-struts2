@@ -81,6 +81,7 @@ abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.Htt
 	 * Retourne le status définit par setStatus ou sendError.
 	 * @return int
 	 */
+	@Override
 	public final int getStatus() {
 		return status;
 	}
