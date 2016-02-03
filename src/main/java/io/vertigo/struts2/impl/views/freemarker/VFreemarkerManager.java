@@ -56,7 +56,7 @@ import freemarker.cache.WebappTemplateLoader;
  *
  */
 public final class VFreemarkerManager extends FreemarkerManager {
-	private static String SEP = ";";
+	private static final String SEP = ";";
 	private static final String DEFAUT_TEMPLATES_PATH = "webapp://"; //presume that most apps will require the webapp and class template loader
 	private static final String IMPLICIT_TEMPLATES_PATH = "class://io/vertigo/struts2/ftl;struts2://"; //struts2:// => default to struts2
 
