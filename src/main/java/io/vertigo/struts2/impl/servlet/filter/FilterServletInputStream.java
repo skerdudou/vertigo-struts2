@@ -21,6 +21,7 @@ package io.vertigo.struts2.impl.servlet.filter;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 
 /**
@@ -29,6 +30,7 @@ import javax.servlet.ServletInputStream;
  */
 class FilterServletInputStream extends ServletInputStream {
 	private final InputStream in;
+	private boolean finished = false;
 
 	/**
 	 * Constructeur.
@@ -56,7 +58,9 @@ class FilterServletInputStream extends ServletInputStream {
 	 */
 	@Override
 	public int read() throws IOException {
-		return in.read();
+		final int result = in.read();
+		finished = result == -1;
+		return result;
 	}
 
 	/**
@@ -69,7 +73,9 @@ class FilterServletInputStream extends ServletInputStream {
 	 */
 	@Override
 	public int read(final byte[] bytes) throws IOException {
-		return in.read(bytes);
+		final int result = in.read(bytes);
+		finished = result == -1;
+		return result;
 	}
 
 	/**
@@ -85,11 +91,13 @@ class FilterServletInputStream extends ServletInputStream {
 	 */
 	@Override
 	public int read(final byte[] bytes, final int off, final int len) throws IOException {
-		return in.read(bytes, off, len);
+		final int result = in.read(bytes, off, len);
+		finished = result == -1;
+		return result;
 	}
 
 	/**
-	 * Passe et �limine <code>count</code> octets de cet input stream.
+	 * Passe et élimine <code>count</code> octets de cet input stream.
 	 * Le nombre d'octets effectivement passés est renvoyé en retour.
 	 * @param count int
 	 * @return int
@@ -172,8 +180,38 @@ class FilterServletInputStream extends ServletInputStream {
 	public int readLine(final byte[] buf, final int off, final int len) throws IOException {
 		if (in instanceof ServletInputStream) {
 			final ServletInputStream sIn = (ServletInputStream) in;
-			return sIn.readLine(buf, off, len);
+			final int result = sIn.readLine(buf, off, len);
+			finished = result == -1;
+			return result;
 		}
-		return super.readLine(buf, off, len);
+		final int result = super.readLine(buf, off, len);
+		finished = result == -1;
+		return result;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isFinished() {
+		if (in instanceof ServletInputStream) {
+			final ServletInputStream sIn = (ServletInputStream) in;
+			return sIn.isFinished();
+		}
+		return finished;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isReady() {
+		if (in instanceof ServletInputStream) {
+			final ServletInputStream sIn = (ServletInputStream) in;
+			return sIn.isReady();
+		}
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setReadListener(final ReadListener readListener) {
+		throw new UnsupportedOperationException("Can't setWriteListener on this ResponseStream");
 	}
 }
