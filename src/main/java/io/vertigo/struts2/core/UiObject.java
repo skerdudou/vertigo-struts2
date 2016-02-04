@@ -329,7 +329,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	}
 
 	private static boolean isMultiple(final DtField dtField) {
-		return dtField.getDomain().getName().equals(DOMAIN_MULTIPLE_IDS);
+		return DOMAIN_MULTIPLE_IDS.equals(dtField.getDomain().getName());
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
@@ -411,7 +411,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 				try {
 					final Serializable typedValue = (Serializable) formatter.stringToValue(inputBuffer.get(constFieldName), dtField.getDomain().getDataType());
 					throw new VSystemException("Erreur de formatage non reproduite ('" + inputBuffer.get(constFieldName) + "'=>" + typedValue + "), l'UiObject doit être désynchronisé. Recharger votre page. " + this.toString());
-				} catch (final FormatterException e) {
+				} catch (final FormatterException e) { //We don't log nor rethrow this exception
 					getUiObjectErrors().addError(dtField, e.getMessageText());
 				}
 			}
@@ -440,7 +440,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "uiObject(buffer:" + inputBuffer.toString() + " over dto:" + dto.toString() + ")";
+		return "uiObject(buffer:" + inputBuffer + " over dto:" + dto + ")";
 	}
 
 	/** {@inheritDoc} */
