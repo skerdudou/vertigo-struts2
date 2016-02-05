@@ -56,7 +56,7 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 	public DtList<D> obtainDtList() {
 		if (lazyDtList == null) {
 			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-				lazyDtList = storeManager.get().getDataStore().<D> readAll(dtListUri);
+				lazyDtList = storeManager.get().getDataStore().<D> getList(dtListUri);
 			}
 		}
 		return lazyDtList;
