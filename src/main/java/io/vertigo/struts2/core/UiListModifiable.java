@@ -23,7 +23,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VUserException;
 
 import java.io.Serializable;
 import java.util.AbstractList;
@@ -234,7 +233,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<D> flush() throws VUserException {
+	public DtList<D> flush() {
 		removedDtObjects.clear();
 		addedDtObjects.clear();
 		modifiedDtObjects.clear();
@@ -331,7 +330,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 			UiListModifiable.this.remove(get(currentIndex - 1));
 		}
 
-		private void checkForComodification() throws ConcurrentModificationException {
+		private void checkForComodification() {
 			if (expectedSize != size()) {
 				throw new ConcurrentModificationException();
 			}

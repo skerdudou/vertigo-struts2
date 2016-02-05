@@ -29,18 +29,15 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 /**
- * Interceptor Struts des exceptions de type UserException pour ajouter les messages à la page et la r�afficher.
+ * Interceptor Struts des exceptions de type UserException pour ajouter les messages à la page et la réafficher.
  * @author npiedeloup
  */
 public class VUserExceptionInterceptor extends AbstractInterceptor {
 	private static final long serialVersionUID = -3416159964166247585L;
 
-	//private final ExceptionPreResultListener exceptionPreResultListener = new ExceptionPreResultListener();
-
 	/** {@inheritDoc} */
 	@Override
 	public String intercept(final ActionInvocation actionInvocation) throws Exception {
-		//actionInvocation.addPreResultListener(exceptionPreResultListener);
 		try {
 			return actionInvocation.invoke();
 		} catch (final ValidationUserException e) {
@@ -59,10 +56,4 @@ public class VUserExceptionInterceptor extends AbstractInterceptor {
 			return Action.NONE;
 		}
 	}
-	//	private class ExceptionPreResultListener implements PreResultListener {
-	//		@Override
-	//		public void beforeResult(final ActionInvocation invocation, final String resultCode) {
-	//			// perform operation necessary before Result execution
-	//		}
-	//	}
 }

@@ -82,7 +82,7 @@ public final class CompressionFilter extends AbstractFilter {
 	 * @return boolean
 	 */
 	public boolean isUserAgentNullOrCompressionNull(final String reqGzip, final String reqUserAgent) {
-		return compressionThreshold == 0 || "false".equalsIgnoreCase(reqGzip) || reqUserAgent != null && reqUserAgent.indexOf(userAgent) == -1;
+		return compressionThreshold == 0 || "false".equalsIgnoreCase(reqGzip) || reqUserAgent != null && ! reqUserAgent.contains(userAgent);
 	}
 
 	/**
@@ -132,7 +132,7 @@ public final class CompressionFilter extends AbstractFilter {
 		final Enumeration en = request.getHeaders("Accept-Encoding");
 		while (en.hasMoreElements()) {
 			name = (String) en.nextElement();
-			if (name.indexOf(GZIP) != -1) {
+			if (name.contains(GZIP)) {
 				supportCompression = true;
 				break;
 			}

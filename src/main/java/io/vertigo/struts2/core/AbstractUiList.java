@@ -73,9 +73,9 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
-		final Option<DtField> dtIdField = getDtDefinition().getIdField();
-		if (dtIdField.isDefined()) {
-			camelIdFieldName = StringUtil.constToLowerCamelCase(dtIdField.get().name());
+		final Option<DtField> idFieldOption = getDtDefinition().getIdField();
+		if (idFieldOption.isDefined()) {
+			camelIdFieldName = StringUtil.constToLowerCamelCase(idFieldOption.get().name());
 		} else {
 			camelIdFieldName = null;
 		}

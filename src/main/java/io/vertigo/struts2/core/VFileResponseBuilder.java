@@ -71,13 +71,12 @@ public final class VFileResponseBuilder {
 		send(vFile, false);
 	}
 
-	private String send(final VFile vFile, final boolean attachment) {
+	private void send(final VFile vFile, final boolean attachment) {
 		try {
 			doSend(vFile, attachment);
 		} catch (final IOException e) {
 			handleException(e);
 		}
-		return null;
 	}
 
 	private void doSend(final VFile vFile, final boolean attachment) throws IOException {
@@ -130,7 +129,7 @@ public final class VFileResponseBuilder {
 			sb.append("attachment;");
 		}
 		final String cleanestFileName = cleanFileName.replaceAll(" ", "%20"); //cleanest for default fileName
-		sb.append("filename=" + cleanestFileName);
+		sb.append("filename=").append(cleanestFileName);
 		byte[] utf8FileName;
 		try {
 			utf8FileName = cleanFileName.getBytes("utf8"); //Utf8 fileName

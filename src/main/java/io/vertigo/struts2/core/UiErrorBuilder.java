@@ -39,8 +39,6 @@ import java.util.Set;
  * @author npiedeloup
  */
 public final class UiErrorBuilder {
-
-	//private final List<MessageText> globalErrors = new ArrayList<MessageText>();
 	private final List<UiError> uiObjectErrors = new ArrayList<>();
 	private final Map<DtObject, Set<DtField>> uiErrorIndex = new HashMap<>();
 

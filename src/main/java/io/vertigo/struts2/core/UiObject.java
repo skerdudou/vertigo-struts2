@@ -28,7 +28,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
@@ -126,9 +125,8 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 			final String strValue = getValueAsString(dtField);
 			return parseMultipleValue(strValue);
 		} else if (isBoolean(dtField)) {
-			final Boolean value = (Boolean) getTypedValue(dtField);
-			final String strValue = value != null ? String.valueOf(value) : null;
-			return strValue;
+			final Boolean value = getTypedValue(dtField, Boolean.class);
+			return value != null ? String.valueOf(value) : null;
 		} else {
 			return getValueAsString(dtField);
 		}
@@ -156,12 +154,14 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @return Valeur typée du champs
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
-	Object getTypedValue(final DtField dtField) {
+	<T> T getTypedValue(final DtField dtField, final Class<T> type) {
+		Assertion.checkNotNull(dtField);
+		Assertion.checkNotNull(type);
+		//-----
 		if (hasFormatError(dtField)) {
 			throw new IllegalAccessError("Le champ " + dtField.getName() + " possède une erreur de formattage et doit être lu par son UiObject");
 		}
-		//-----
-		return doGetTypedValue(dtField);
+		return type.cast(doGetTypedValue(dtField));
 	}
 
 	/**
@@ -184,16 +184,13 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 		inputBuffer.put(constFieldName, getValueAsString(dtField));
 	}
 
-	// ==========================================================================
-
 	/**
 	 * Valide l'objet d'IHM pour mettre à jour l'objet métier.
 	 * @param validator Validateur à utilisé, peut-être spécifique à l'objet.
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 * @return Objet métier mis à jour
-	 * @throws VUserException Si des erreurs ont été levées
 	 */
-	public D validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) throws VUserException {
+	public D validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
 		//pour compatibilité ascendante : on check, puis on flush
 		if (!isChecked) {
 			check(validator, uiMessageStack);
@@ -204,9 +201,8 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/**
 	 * Si il n'y a pas d'erreur dans l'objet d'IHM, l'objet métier est mis à jour et retourné.
 	 * @return Objet métier mis à jour
-	 * @throws VUserException Si des erreurs ont été levées
 	 */
-	public D flush() throws VUserException {
+	public D flush() {
 		if (!isModified()) {
 			return dto;
 		}
@@ -252,7 +248,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public Integer getInteger(final String constFieldName) {
-		return (Integer) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), Integer.class);
 	}
 
 	/**
@@ -261,7 +257,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public Long getLong(final String constFieldName) {
-		return (Long) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), Long.class);
 	}
 
 	/**
@@ -270,7 +266,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	* @throws IllegalAccessError Si le champs possède une erreur de formatage
 	  */
 	public String getString(final String constFieldName) {
-		return (String) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), String.class);
 	}
 
 	/**
@@ -279,7 +275,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public Boolean getBoolean(final String constFieldName) {
-		return (Boolean) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), Boolean.class);
 	}
 
 	/**
@@ -288,7 +284,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public Date getDate(final String constFieldName) {
-		return (Date) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), Date.class);
 	}
 
 	/**
@@ -297,7 +293,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public BigDecimal getBigDecimal(final String constFieldName) {
-		return (BigDecimal) getTypedValue(getDtField(constFieldName));
+		return getTypedValue(getDtField(constFieldName), BigDecimal.class);
 	}
 
 	private DtField getDtField(final String constFieldName) {
@@ -333,7 +329,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	}
 
 	private static boolean isMultiple(final DtField dtField) {
-		return dtField.getDomain().getName().equals(DOMAIN_MULTIPLE_IDS);
+		return DOMAIN_MULTIPLE_IDS.equals(dtField.getDomain().getName());
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
@@ -415,7 +411,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 				try {
 					final Serializable typedValue = (Serializable) formatter.stringToValue(inputBuffer.get(constFieldName), dtField.getDomain().getDataType());
 					throw new VSystemException("Erreur de formatage non reproduite ('" + inputBuffer.get(constFieldName) + "'=>" + typedValue + "), l'UiObject doit être désynchronisé. Recharger votre page. " + this.toString());
-				} catch (final FormatterException e) {
+				} catch (final FormatterException e) { //We don't log nor rethrow this exception
 					getUiObjectErrors().addError(dtField, e.getMessageText());
 				}
 			}
@@ -444,7 +440,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "uiObject(buffer:" + inputBuffer.toString() + " over dto:" + dto.toString() + ")";
+		return "uiObject(buffer:" + inputBuffer + " over dto:" + dto + ")";
 	}
 
 	/** {@inheritDoc} */
@@ -456,19 +452,19 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** Non implémenté. */
 	@Override
 	public void clear() {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** Non implémenté. */
 	@Override
 	public boolean containsValue(final Object arg0) {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** Non implémenté. */
 	@Override
 	public Set<java.util.Map.Entry<String, Serializable>> entrySet() {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
@@ -486,13 +482,13 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** Non implémenté. */
 	@Override
 	public void putAll(final Map<? extends String, ? extends Serializable> arg0) {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** Non implémenté. */
 	@Override
 	public String remove(final Object arg0) {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
@@ -504,6 +500,6 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** Non implémenté. */
 	@Override
 	public Collection<Serializable> values() {
-		throw new UnsupportedOperationException("Non implémenté");
+		throw new UnsupportedOperationException();
 	}
 }

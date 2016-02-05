@@ -104,28 +104,24 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		Assertion.checkNotNull(context);
 		//-----
 		//totalPuts++;
+		final Transaction transaction = createTransaction();
+		boolean committed = false;
 		try {
-			final Transaction transaction = createTransaction();
-			boolean committed = false;
-			try {
-				final DatabaseEntry theKey = new DatabaseEntry();
-				keyBinding.objectToEntry(context.getId(), theKey);
-				final DatabaseEntry theData = new DatabaseEntry();
-				cacheValueBinding.objectToEntry(new CacheValue(context), theData);
+			final DatabaseEntry theKey = new DatabaseEntry();
+			keyBinding.objectToEntry(context.getId(), theKey);
+			final DatabaseEntry theData = new DatabaseEntry();
+			cacheValueBinding.objectToEntry(new CacheValue(context), theData);
 
-				final OperationStatus status = cacheDatas.put(transaction, theKey, theData);
-				if (!OperationStatus.SUCCESS.equals(status)) {
-					throw new MsgDatabaseException("la sauvegarde a échouée");
-				}
-				transaction.commit();
-				committed = true;
-			} finally {
-				if (!committed) {
-					transaction.abort();
-				}
+			final OperationStatus status = cacheDatas.put(transaction, theKey, theData);
+			if (!OperationStatus.SUCCESS.equals(status)) {
+				throw new MsgDatabaseException("la sauvegarde a échouée");
 			}
-		} catch (final DatabaseException e) {
-			throw new WrappedException(e);
+			transaction.commit();
+			committed = true;
+		} finally {
+			if (!committed) {
+				transaction.abort();
+			}
 		}
 	}
 
@@ -169,7 +165,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		return System.currentTimeMillis() - cacheValue.getCreateTime() >= timeToLiveSeconds * 1000;
 	}
 
-	private Transaction createTransaction() throws DatabaseException {
+	private Transaction createTransaction() {
 		return cacheDatas.getEnvironment().beginTransaction(null, null);
 	}
 
@@ -177,7 +173,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	 * Purge les elements trop vieux.
 	 * @throws DatabaseException Si erreur
 	 */
-	void removeTooOldElements() throws DatabaseException {
+	void removeTooOldElements() {
 		final DatabaseEntry foundKey = new DatabaseEntry();
 		final DatabaseEntry foundData = new DatabaseEntry();
 		try (Cursor cursor = cacheDatas.openCursor(null, null)) {
@@ -223,7 +219,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		}
 	}
 
-	private Environment createDbEnv() throws DatabaseException {
+	private Environment createDbEnv() {
 		final EnvironmentConfig myEnvConfig = new EnvironmentConfig();
 		myEnvConfig.setReadOnly(false);
 		myEnvConfig.setAllowCreate(true);
@@ -235,17 +231,15 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	}
 
 	private Database createDb() {
-		final DatabaseConfig myDbConfig = new DatabaseConfig();
-		myDbConfig.setReadOnly(false);
-		myDbConfig.setAllowCreate(true);
-		myDbConfig.setTransactional(true);
-		final Database db;
+		final DatabaseConfig myDbConfig = new DatabaseConfig()
+				.setReadOnly(false)
+				.setAllowCreate(true)
+				.setTransactional(true);
 		try {
-			db = myEnv.openDatabase(null, "KActionContext", myDbConfig);
+			return myEnv.openDatabase(null, "KActionContext", myDbConfig);
 		} catch (final DatabaseException e) {
 			throw new WrappedException(e);
 		}
-		return db;
 	}
 
 	private static final class MsgDatabaseException extends DatabaseException {
@@ -259,7 +253,8 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	/**
 	 * @author npiedeloup
 	 */
-	static final class RemoveTooOldElementsDaemon implements Daemon {
+	//must be public to be used by DaemonManager
+	public static final class RemoveTooOldElementsDaemon implements Daemon {
 		private static final Logger TIMER_LOGGER = Logger.getLogger(RemoveTooOldElementsDaemon.class);
 
 		private final BerkeleyContextCachePlugin berkeleyContextCachePlugin;
