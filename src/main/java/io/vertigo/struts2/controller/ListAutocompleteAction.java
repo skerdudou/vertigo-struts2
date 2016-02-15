@@ -103,9 +103,8 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	}
 
 	private static String toJson(final DtList<?> dtList, final DtField keyField, final DtField labelField) {
-		final StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder("[");
 		String sep = "";
-		sb.append("[");
 		for (final DtObject dto : dtList) {
 			final Object keyValue = keyField.getDataAccessor().getValue(dto);
 			final String labelValue = (String) labelField.getDataAccessor().getValue(dto);

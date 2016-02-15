@@ -103,7 +103,6 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	public void put(final KActionContext context) {
 		Assertion.checkNotNull(context);
 		//-----
-		//totalPuts++;
 		final Transaction transaction = createTransaction();
 		boolean committed = false;
 		try {
@@ -128,7 +127,6 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	/** {@inheritDoc} */
 	@Override
 	public KActionContext get(final String key) {
-		//totalCalls++;
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
 			keyBinding.objectToEntry(key, theKey);
@@ -137,7 +135,6 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 			if (OperationStatus.SUCCESS.equals(status)) {
 				final CacheValue cacheValue = readCacheValueSafely(theKey, theData);
 				if (cacheValue != null && !isTooOld(cacheValue)) { //null si erreur de lecture
-					//totalHits++;
 					return (KActionContext) cacheValue.getValue();
 				}
 				cacheDatas.delete(null, theKey);

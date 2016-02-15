@@ -174,9 +174,9 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	public UiObject<D> get(final int row) {
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.checkState(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId");
-		final UiObject<D> UiObject = bufferUiObjects.get(row);
-		Assertion.checkNotNull(UiObject);
-		return UiObject;
+		final UiObject<D> uiObject = bufferUiObjects.get(row);
+		Assertion.checkNotNull(uiObject);
+		return uiObject;
 	}
 
 	/** {@inheritDoc} */
@@ -191,13 +191,13 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	}
 
 	/**
-	 * @param UiObject UiObject recherché
+	 * @param uiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOf(final UiObject<D> UiObject) {
-		Assertion.checkNotNull(UiObject);
+	private int indexOf(final UiObject<D> uiObject) {
+		Assertion.checkNotNull(uiObject);
 		//-----
-		return bufferUiObjects.indexOf(UiObject);
+		return bufferUiObjects.indexOf(uiObject);
 	}
 
 	/**
