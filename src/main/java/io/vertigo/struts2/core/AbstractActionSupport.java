@@ -266,7 +266,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * @return VFileResponseBuilder pour l'envoi de fichier
 	 */
 	public final VFileResponseBuilder createVFileResponseBuilder() {
-		return new VFileResponseBuilder(ServletActionContext.getRequest(), response);
+		return new VFileResponseBuilder(response);
 	}
 
 	/**
