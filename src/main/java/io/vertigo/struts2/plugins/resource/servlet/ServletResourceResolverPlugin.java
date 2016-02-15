@@ -37,21 +37,21 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 	private final ServletContext servletContext;
 
 	/**
-	 * @param servletContext ServletContext
-	 */
-	public static synchronized void setServletContext(final ServletContext servletContext) {
-		Assertion.checkNotNull(servletContext);
-		//-----
-		servletContextRef = new WeakReference<>(servletContext);
-	}
-
-	/**
 	 * Constructor.
 	 */
 	public ServletResourceResolverPlugin() {
 		Assertion.checkNotNull(servletContextRef.get(), "Ce servletContext n'est plus accessible");
 		//-----
 		servletContext = servletContextRef.get();
+	}
+
+	/**
+	 * @param servletContext ServletContext
+	 */
+	public static synchronized void setServletContext(final ServletContext servletContext) {
+		Assertion.checkNotNull(servletContext);
+		//-----
+		servletContextRef = new WeakReference<>(servletContext);
 	}
 
 	/** {@inheritDoc} */

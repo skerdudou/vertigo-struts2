@@ -92,10 +92,9 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	}
 
 	private static String translatePath(final String path) {
-		String translatedPath = path.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'));
-		translatedPath = translatedPath.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'));
-		translatedPath = translatedPath.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
-		return translatedPath;
+		return path.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
+				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
+				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 
 	/** {@inheritDoc} */
