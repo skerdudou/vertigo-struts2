@@ -82,7 +82,7 @@ public final class UiErrorBuilder {
 	void clearErrors(final DtObject dtObject) {
 		for (final Iterator<UiError> it = uiObjectErrors.iterator(); it.hasNext();) {
 			final UiError uiError = it.next();
-			if (uiError.getDtObject() == dtObject) {
+			if (uiError.getDtObject().equals(dtObject)) {
 				it.remove();
 			}
 		}
@@ -99,7 +99,7 @@ public final class UiErrorBuilder {
 		//-----
 		for (final Iterator<UiError> it = uiObjectErrors.iterator(); it.hasNext();) {
 			final UiError uiError = it.next();
-			if (uiError.getDtObject() == dtObject && uiError.getDtField() == dtField) {
+			if (uiError.getDtObject().equals(dtObject) && uiError.getDtField().equals(dtField)) {
 				it.remove();
 			}
 		}
@@ -139,7 +139,8 @@ public final class UiErrorBuilder {
 		final DtField dtField2 = getDtField(dto, fieldName2);
 		final Object value1 = getValue(dto, dtField1);
 		final Object value2 = getValue(dto, dtField2);
-		if (value1 != null && !value1.equals(value2) || value1 != value2) {
+		//value1 et value2 == null ou value1 equals value2, sinon error
+		if ((value1 != null && !value1.equals(value2)) || value2 != null) { 
 			addError(dto, dtField2, messageText);
 		}
 	}

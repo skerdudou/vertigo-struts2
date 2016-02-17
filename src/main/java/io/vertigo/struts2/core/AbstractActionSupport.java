@@ -232,21 +232,21 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * @return Si on est en mode edition
 	 */
 	protected final boolean isModeEdit() {
-		return context.get(MODE_CONTEXT_KEY) == FormMode.edit;
+		return FormMode.edit.equals(context.get(MODE_CONTEXT_KEY));
 	}
 
 	/**
 	 * @return Si on est en mode readOnly
 	 */
 	protected final boolean isModeRead() {
-		return context.get(MODE_CONTEXT_KEY) == FormMode.readOnly;
+		return FormMode.readOnly.equals(context.get(MODE_CONTEXT_KEY));
 	}
 
 	/**
 	 * @return Si on est en mode create
 	 */
 	protected final boolean isModeCreate() {
-		return context.get(MODE_CONTEXT_KEY) == FormMode.create;
+		return FormMode.create.equals(context.get(MODE_CONTEXT_KEY));
 	}
 
 	/**
