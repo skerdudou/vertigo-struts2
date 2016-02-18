@@ -193,7 +193,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	private D loadDto(final Object key) {
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return storeManager.get().getDataStore().<D> get(new URI<D>(getDtDefinition(), key));
+			return storeManager.get().getDataStore().<D> read(new URI<D>(getDtDefinition(), key));
 		}
 	}
 
