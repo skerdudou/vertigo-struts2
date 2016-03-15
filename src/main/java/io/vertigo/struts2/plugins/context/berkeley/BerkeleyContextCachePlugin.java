@@ -18,15 +18,6 @@
  */
 package io.vertigo.struts2.plugins.context.berkeley;
 
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.struts2.core.KActionContext;
-import io.vertigo.struts2.impl.context.ContextCachePlugin;
-
 import java.io.File;
 
 import javax.inject.Inject;
@@ -45,6 +36,15 @@ import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.Transaction;
+
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.struts2.core.KActionContext;
+import io.vertigo.struts2.impl.context.ContextCachePlugin;
 
 /**
  * Implémentation Berkeley du ContextCachePlugin.
@@ -151,8 +151,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 			final CacheValue cacheValue = cacheValueBinding.entryToObject(theData);
 			return cacheValue;
 		} catch (final RuntimeException e) {
-			LOGGER.warn("Erreur de lecture du ContextCache : suppression de l'entrée incrimin�e : " + key, e);
-			cacheDatas.delete(null, theKey);
+			LOGGER.warn("Erreur de lecture du ContextCache : suppression de l'entrée incriminée : " + key, e);
 		}
 		return null;
 	}
@@ -172,20 +171,25 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	void removeTooOldElements() {
 		final DatabaseEntry foundKey = new DatabaseEntry();
 		final DatabaseEntry foundData = new DatabaseEntry();
-		try (Cursor cursor = cacheDatas.openCursor(null, null)) {
-			final int maxChecked = 500;
-			int checked = 0;
-			//Les elements sont parcouru dans l'ordre d'insertion (sans lock)
-			//dés qu'on en trouve un trop récent, on stop
-			while (checked < maxChecked && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
-				final CacheValue cacheValue = readCacheValueSafely(foundKey, foundData);
-				if (cacheValue == null || isTooOld(cacheValue)) {//null si erreur de lecture
-					cacheDatas.delete(null, foundKey);
-					checked++;
-				} else {
-					break;
+		int checked = 0;
+		final Transaction transaction = createTransaction();
+		try {
+			try (Cursor cursor = cacheDatas.openCursor(transaction, null)) {
+				final int maxChecked = 500;
+				//Les elements sont parcouru dans l'ordre d'insertion (sans lock)
+				//dés qu'on en trouve un trop récent, on stop
+				while (checked < maxChecked && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
+					final CacheValue cacheValue = readCacheValueSafely(foundKey, foundData);
+					if (cacheValue == null || isTooOld(cacheValue)) {//null si erreur de lecture
+						cursor.delete();
+						checked++;
+					} else {
+						break;
+					}
 				}
 			}
+		} finally {
+			transaction.commit();
 			LOGGER.info("purge " + checked + " elements");
 		}
 	}
