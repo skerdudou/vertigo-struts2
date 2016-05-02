@@ -18,16 +18,16 @@
  */
 package io.vertigo.struts2.impl;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
+import javax.inject.Named;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
-import javax.inject.Named;
 
 /**
  * Gestion du passage de paramètres aux Actions.
@@ -49,7 +49,7 @@ public final class MethodUtil {
 	 */
 	public static Object invoke(final Object instance, final String methodName, final Container container) {
 		final Option<Method> actionMethod = findMethodByName(instance.getClass(), methodName);
-		if (actionMethod.isEmpty()) {
+		if (!actionMethod.isPresent()) {
 			throw new VSystemException("Méthode {0} non trouvée sur {1}", methodName, instance.getClass().getName());
 		}
 		actionMethod.get().setAccessible(true); //la méthode peut être protected
