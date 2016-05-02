@@ -70,9 +70,9 @@ public abstract class AbstractFilter implements Filter {
 			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll("\\*(;|$)", ".*$1"); //* en fin de pattern devient tous char
 			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll(";", ")|(^"); //; devient un OR
 			urlExcludePatternParamNormalized = "(^" + urlExcludePatternParamNormalized + ")";
-			return Option.some(Pattern.compile(urlExcludePatternParamNormalized));
+			return Option.of(Pattern.compile(urlExcludePatternParamNormalized));
 		}
-		return Option.none();
+		return Option.empty();
 	}
 
 	/**
@@ -82,7 +82,7 @@ public abstract class AbstractFilter implements Filter {
 	 * @return si l'url match le pattern, ou false si pas de pattern ou si pas httprequest.
 	 */
 	protected static final boolean isUrlMatch(final ServletRequest req, final Option<Pattern> pattern) {
-		if (pattern.isDefined() && req instanceof HttpServletRequest) {
+		if (pattern.isPresent() && req instanceof HttpServletRequest) {
 			final HttpServletRequest httpRequest = (HttpServletRequest) req;
 			return isUrlMatch(httpRequest.getContextPath(), httpRequest.getRequestURI(), pattern.get());
 		}

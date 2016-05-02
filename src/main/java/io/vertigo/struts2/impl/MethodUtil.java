@@ -82,13 +82,13 @@ public final class MethodUtil {
 	public static Option<Method> findMethodByName(final Class<?> declaringClass, final String methodName) {
 		for (final Method method : declaringClass.getDeclaredMethods()) {
 			if (method.getName().equals(methodName)) {
-				return Option.some(method);
+				return Option.of(method);
 			}
 		}
 		if (declaringClass.getSuperclass() != null) {
 			return findMethodByName(declaringClass.getSuperclass(), methodName);
 		}
-		return Option.none();
+		return Option.empty();
 	}
 
 	private static Object[] findMethodParameters(final Container container, final Method method) {
@@ -106,9 +106,9 @@ public final class MethodUtil {
 		final boolean optionalParameter = isOptional(method, i);
 		if (optionalParameter) {
 			if (container.contains(id)) {
-				return Option.some(container.resolve(id, ClassUtil.getGeneric(method, i)));
+				return Option.of(container.resolve(id, ClassUtil.getGeneric(method, i)));
 			}
-			return Option.none();
+			return Option.empty();
 		}
 		final Object value = container.resolve(id, method.getParameterTypes()[i]);
 		Assertion.checkNotNull(value);
