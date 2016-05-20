@@ -100,12 +100,6 @@ limitations under the License. -->
 			<artifactId>struts2-spring-plugin</artifactId>
 			<version>2.3.20</version>
 		</dependency>
-
-		<dependency>
-			<groupId>asm</groupId>
-			<artifactId>asm-commons</artifactId>
-			<version>3.3.1</version> <!-- Struts pointe sur la 3.3, or le projet utilise déjà la 3.3.1 par ailleur -->
-		</dependency>
 		
 	</dependencies>
 </project>
