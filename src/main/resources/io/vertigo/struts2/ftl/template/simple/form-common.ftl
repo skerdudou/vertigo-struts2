@@ -3,8 +3,8 @@
  * $Id: form-common.ftl,v 1.1 2014/03/18 11:08:57 npiedeloup Exp $
  */
 -->
-<#if (parameters.validate!false == false)>
-    <#if parameters.onsubmit?has_content>
+<#if (parameters.validate!false == false)><#rt/>
+    <#if parameters.onsubmit?has_content><#rt/>
         ${tag.addParameter('onsubmit', "${parameters.onsubmit}") }
     </#if>
 </#if>
@@ -49,4 +49,4 @@
 <#if parameters.acceptcharset?has_content>
  accept-charset="${parameters.acceptcharset?html}"<#rt/>
 </#if>
-<#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
+<#include "/${parameters.templateDir}/${parameters.expandTheme}/dynamic-attributes.ftl" />

@@ -6,7 +6,7 @@
 -->
 <#assign currentLayout = controlLayout_type?default('none') />	
 <#if currentLayout = 'table'>
-	<#include "/${parameters.templateDir}/${parameters.theme}/controlheader-trlogic.ftl" />
+	<#include "/${parameters.templateDir}/${parameters.expandTheme}/controlheader-trlogic.ftl" />
 				<td <#t/>
 	<#if parameters.submitcolspan??><#t/>
 	    colspan="${parameters.submitcolspan?html}"<#t/>	    
