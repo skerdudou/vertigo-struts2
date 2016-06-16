@@ -71,14 +71,14 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
-		//on surcharge equals pour eviter un appel à super.equals non d�sir� et qui forcerai le chargement de la liste
+		//on surcharge equals pour éviter un appel à super.equals non désiré et qui forcerai le chargement de la liste
 		return (o instanceof UiMdList) && dtListUri.equals(((UiMdList<?>) o).dtListUri);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
-		//on surcharge hashCode pour eviter un appel à super.hashCode non d�sir� et qui forcerai le chargement de la liste
+		//on surcharge hashCode pour eviter un appel à super.hashCode non désiré et qui forcerai le chargement de la liste
 		return dtListUri.hashCode();
 	}
 
