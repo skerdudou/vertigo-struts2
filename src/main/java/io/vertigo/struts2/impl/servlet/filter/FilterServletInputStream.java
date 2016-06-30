@@ -42,15 +42,6 @@ class FilterServletInputStream extends ServletInputStream {
 	}
 
 	/**
-	 * Constructeur.
-	 * @param in ServletInputStream
-	 */
-	public FilterServletInputStream(final ServletInputStream in) {
-		super();
-		this.in = in;
-	}
-
-	/**
 	 * Lit l'octet suivant dans l'input stream. L'octet est retourné en tant que type int dans l'intervalle 0 à 255,
 	 * ou -1 si la fin du flux a été atteinte.
 	 * @return int
@@ -139,7 +130,7 @@ class FilterServletInputStream extends ServletInputStream {
 	 * @see java.io.InputStream#reset()
 	 */
 	@Override
-	synchronized public void mark(final int readlimit) {
+	public synchronized void mark(final int readlimit) {
 		in.mark(readlimit);
 	}
 
@@ -151,7 +142,7 @@ class FilterServletInputStream extends ServletInputStream {
 	 * @see java.io.IOException
 	 */
 	@Override
-	synchronized public void reset() throws IOException {
+	public synchronized void reset() throws IOException {
 		in.reset();
 	}
 
