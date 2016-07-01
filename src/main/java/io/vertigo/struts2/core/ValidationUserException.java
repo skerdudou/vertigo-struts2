@@ -18,6 +18,9 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -26,9 +29,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Validation exception on a object's field.

@@ -18,10 +18,10 @@
  */
 package io.vertigo.struts2.core;
 
+import java.io.Serializable;
+
 import io.vertigo.app.Home;
 import io.vertigo.lang.Assertion;
-
-import java.io.Serializable;
 
 /**
  * Référence vers un composant.

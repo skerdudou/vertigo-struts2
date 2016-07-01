@@ -18,6 +18,11 @@
  */
 package io.vertigo.struts2.controller;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -32,11 +37,6 @@ import io.vertigo.struts2.core.AbstractActionSupport;
 import io.vertigo.struts2.core.ContextRef;
 import io.vertigo.struts2.core.UiList;
 import io.vertigo.util.StringUtil;
-
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.inject.Inject;
 
 /**
  * Service web de l'autocomplete des listes.

@@ -18,11 +18,11 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.List;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-
-import java.util.List;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.

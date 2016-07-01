@@ -18,15 +18,15 @@
  */
 package io.vertigo.struts2.impl.interceptor;
 
-import io.vertigo.lang.VUserException;
-import io.vertigo.struts2.core.AbstractActionSupport;
-import io.vertigo.struts2.core.UiError;
-import io.vertigo.struts2.core.ValidationUserException;
-
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+
+import io.vertigo.lang.VUserException;
+import io.vertigo.struts2.core.AbstractActionSupport;
+import io.vertigo.struts2.core.UiError;
+import io.vertigo.struts2.core.ValidationUserException;
 
 /**
  * Interceptor Struts des exceptions de type UserException pour ajouter les messages à la page et la réafficher.

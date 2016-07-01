@@ -18,8 +18,6 @@
  */
 package io.vertigo.struts2.impl.servlet.filter;
 
-import io.vertigo.lang.Assertion;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +29,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Filter qui permet de gérer la compatibilité avec IE8, en ajoutant le header X-UA-Compatible dans les responses.

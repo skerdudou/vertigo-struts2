@@ -18,11 +18,11 @@
  */
 package io.vertigo.struts2.impl.context;
 
+import javax.inject.Inject;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.context.ContextCacheManager;
 import io.vertigo.struts2.core.KActionContext;
-
-import javax.inject.Inject;
 
 /**
  * Manager de gestion du cache.

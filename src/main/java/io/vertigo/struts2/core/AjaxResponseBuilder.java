@@ -18,9 +18,9 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.lang.Assertion;
-
 import java.io.PrintWriter;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Builder d'envoi de contenu Ajax.

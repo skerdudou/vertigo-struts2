@@ -18,13 +18,13 @@
  */
 package io.vertigo.struts2.impl.interceptor;
 
-import io.vertigo.struts2.core.AbstractActionSupport;
-
 import java.io.Serializable;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
+
+import io.vertigo.struts2.core.AbstractActionSupport;
 
 /**
  * Interceptor Struts figeant le context.

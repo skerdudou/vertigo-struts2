@@ -18,6 +18,12 @@
  */
 package io.vertigo.struts2.core;
 
+import java.io.Serializable;
+import java.util.AbstractList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -32,12 +38,6 @@ import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
-
-import java.io.Serializable;
-import java.util.AbstractList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.

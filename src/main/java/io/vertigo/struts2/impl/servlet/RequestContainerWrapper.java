@@ -18,12 +18,12 @@
  */
 package io.vertigo.struts2.impl.servlet;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
-
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 
 /**
  * Container Vertigo wrapper de parametres HttpRequest.

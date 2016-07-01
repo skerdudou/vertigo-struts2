@@ -18,11 +18,6 @@
  */
 package io.vertigo.struts2.impl.interceptor;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.struts2.core.GET;
-import io.vertigo.struts2.impl.MethodUtil;
-
 import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +26,11 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.struts2.core.GET;
+import io.vertigo.struts2.impl.MethodUtil;
 
 /**
  * Interceptor Struts limitant l'access direct aux Actions.

@@ -18,14 +18,6 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.core.param.ParamManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.struts2.context.ContextCacheManager;
-import io.vertigo.struts2.exception.ExpiredContextException;
-
 import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -43,6 +35,14 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+
+import io.vertigo.app.Home;
+import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.param.ParamManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.struts2.context.ContextCacheManager;
+import io.vertigo.struts2.exception.ExpiredContextException;
 
 /**
  * Super class des Actions struts.

@@ -18,12 +18,12 @@
  */
 package io.vertigo.struts2.impl.servlet.filter;
 
-import io.vertigo.lang.Option;
-
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.lang.Option;
 
 /**
  * @author npiedeloup

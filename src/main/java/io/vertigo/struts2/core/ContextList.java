@@ -18,13 +18,13 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.UUID;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.lang.Assertion;
-
-import java.util.UUID;
 
 /**
  * Liste des couples (clé, object) enregistrés.

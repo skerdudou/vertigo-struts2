@@ -18,10 +18,6 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +25,10 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletResponse;
+
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Builder d'envoi de Fichier.
