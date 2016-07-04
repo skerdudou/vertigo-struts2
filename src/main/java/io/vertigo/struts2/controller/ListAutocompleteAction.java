@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,11 @@
  */
 package io.vertigo.struts2.controller;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -32,11 +37,6 @@ import io.vertigo.struts2.core.AbstractActionSupport;
 import io.vertigo.struts2.core.ContextRef;
 import io.vertigo.struts2.core.UiList;
 import io.vertigo.util.StringUtil;
-
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.inject.Inject;
 
 /**
  * Service web de l'autocomplete des listes.
@@ -103,9 +103,8 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	}
 
 	private static String toJson(final DtList<?> dtList, final DtField keyField, final DtField labelField) {
-		final StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder("[");
 		String sep = "";
-		sb.append("[");
 		for (final DtObject dto : dtList) {
 			final Object keyValue = keyField.getDataAccessor().getValue(dto);
 			final String labelValue = (String) labelField.getDataAccessor().getValue(dto);

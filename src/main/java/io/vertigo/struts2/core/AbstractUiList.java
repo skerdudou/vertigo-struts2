@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,12 @@
  */
 package io.vertigo.struts2.core;
 
+import java.io.Serializable;
+import java.util.AbstractList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -32,12 +38,6 @@ import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
-
-import java.io.Serializable;
-import java.util.AbstractList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
@@ -74,7 +74,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		final Option<DtField> idFieldOption = getDtDefinition().getIdField();
-		if (idFieldOption.isDefined()) {
+		if (idFieldOption.isPresent()) {
 			camelIdFieldName = StringUtil.constToLowerCamelCase(idFieldOption.get().name());
 		} else {
 			camelIdFieldName = null;
@@ -193,7 +193,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	private D loadDto(final Object key) {
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return storeManager.get().getDataStore().<D> get(new URI<D>(getDtDefinition(), key));
+			return storeManager.get().getDataStore().<D> read(new URI<D>(getDtDefinition(), key));
 		}
 	}
 

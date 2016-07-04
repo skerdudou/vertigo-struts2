@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,6 @@
  */
 package io.vertigo.struts2.impl.unknownhandler;
 
-import io.vertigo.lang.Option;
-import io.vertigo.struts2.impl.MethodUtil;
-import io.vertigo.struts2.impl.servlet.RequestContainerWrapper;
-import io.vertigo.util.StringUtil;
-
 import java.lang.reflect.Method;
 
 import org.apache.struts2.ServletActionContext;
@@ -32,6 +27,11 @@ import com.opensymphony.xwork2.Result;
 import com.opensymphony.xwork2.UnknownHandler;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
+
+import io.vertigo.lang.Option;
+import io.vertigo.struts2.impl.MethodUtil;
+import io.vertigo.struts2.impl.servlet.RequestContainerWrapper;
+import io.vertigo.util.StringUtil;
 
 /**
  * Gestion du passage de paramètres aux Actions.
@@ -63,11 +63,11 @@ public class InjectParamsToActionMethodHandler implements UnknownHandler {
 	@Override
 	public Object handleUnknownActionMethod(final Object action, final String methodName) throws NoSuchMethodException {
 		Option<Method> actionMethod = MethodUtil.findMethodByName(action.getClass(), methodName);
-		if (actionMethod.isEmpty()) {
+		if (!actionMethod.isPresent()) {
 			//method non trouvée, on test doXXX comme struts2 le fait de base
 			final String prefixedMethodName = getPrefixedMethodName(methodName);
 			actionMethod = MethodUtil.findMethodByName(action.getClass(), prefixedMethodName);
-			if (actionMethod.isEmpty()) {
+			if (!actionMethod.isPresent()) {
 				//method non trouvée
 				return null;
 			}

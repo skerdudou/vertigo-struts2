@@ -34,7 +34,6 @@
     <#if parameters.listTitle?has_content>
         <#assign itemTitle= stack.findString(parameters.listTitle)!''/>
     </#if>
-<#assign itemKeyStr = itemKey.toString()/>
 <#assign previousCssClass = appendedCssClass!''/>
 <#assign appendedCssClass = previousCssClass +' checkboxLabel'/>
 <label<#rt/> 

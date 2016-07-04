@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
  */
 package io.vertigo.struts2.plugins.resource.servlet;
 
-import io.vertigo.core.resource.ResourceResolverPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.ServletContext;
+
+import io.vertigo.core.resource.ResourceResolverPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Résolution des URL liées à la servlet.
@@ -37,21 +37,21 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 	private final ServletContext servletContext;
 
 	/**
-	 * @param servletContext ServletContext
-	 */
-	public static synchronized void setServletContext(final ServletContext servletContext) {
-		Assertion.checkNotNull(servletContext);
-		//-----
-		servletContextRef = new WeakReference<>(servletContext);
-	}
-
-	/**
 	 * Constructor.
 	 */
 	public ServletResourceResolverPlugin() {
 		Assertion.checkNotNull(servletContextRef.get(), "Ce servletContext n'est plus accessible");
 		//-----
 		servletContext = servletContextRef.get();
+	}
+
+	/**
+	 * @param servletContext ServletContext
+	 */
+	public static synchronized void setServletContext(final ServletContext servletContext) {
+		Assertion.checkNotNull(servletContext);
+		//-----
+		servletContextRef = new WeakReference<>(servletContext);
 	}
 
 	/** {@inheritDoc} */
@@ -61,9 +61,9 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 		//-----
 		// 2. On recherche dans le context de la webapp
 		try {
-			return Option.option(servletContext.getResource(resource));
+			return Option.ofNullable(servletContext.getResource(resource));
 		} catch (final MalformedURLException e) {
-			return Option.none();
+			return Option.empty();
 		}
 	}
 }

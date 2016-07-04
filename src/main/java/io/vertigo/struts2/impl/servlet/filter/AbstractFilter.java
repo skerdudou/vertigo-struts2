@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,6 @@
  */
 package io.vertigo.struts2.impl.servlet.filter;
 
-import io.vertigo.lang.Option;
-
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +29,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+
+import io.vertigo.lang.Option;
 
 /**
  * @author npiedeloup
@@ -70,9 +70,9 @@ public abstract class AbstractFilter implements Filter {
 			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll("\\*(;|$)", ".*$1"); //* en fin de pattern devient tous char
 			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll(";", ")|(^"); //; devient un OR
 			urlExcludePatternParamNormalized = "(^" + urlExcludePatternParamNormalized + ")";
-			return Option.some(Pattern.compile(urlExcludePatternParamNormalized));
+			return Option.of(Pattern.compile(urlExcludePatternParamNormalized));
 		}
-		return Option.none();
+		return Option.empty();
 	}
 
 	/**
@@ -82,7 +82,7 @@ public abstract class AbstractFilter implements Filter {
 	 * @return si l'url match le pattern, ou false si pas de pattern ou si pas httprequest.
 	 */
 	protected static final boolean isUrlMatch(final ServletRequest req, final Option<Pattern> pattern) {
-		if (pattern.isDefined() && req instanceof HttpServletRequest) {
+		if (pattern.isPresent() && req instanceof HttpServletRequest) {
 			final HttpServletRequest httpRequest = (HttpServletRequest) req;
 			return isUrlMatch(httpRequest.getContextPath(), httpRequest.getRequestURI(), pattern.get());
 		}

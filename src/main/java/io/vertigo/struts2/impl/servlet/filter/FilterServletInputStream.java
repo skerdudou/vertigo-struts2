@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,15 +37,6 @@ class FilterServletInputStream extends ServletInputStream {
 	 * @param in InputStream
 	 */
 	public FilterServletInputStream(final InputStream in) {
-		super();
-		this.in = in;
-	}
-
-	/**
-	 * Constructeur.
-	 * @param in ServletInputStream
-	 */
-	public FilterServletInputStream(final ServletInputStream in) {
 		super();
 		this.in = in;
 	}
@@ -139,7 +130,7 @@ class FilterServletInputStream extends ServletInputStream {
 	 * @see java.io.InputStream#reset()
 	 */
 	@Override
-	synchronized public void mark(final int readlimit) {
+	public synchronized void mark(final int readlimit) {
 		in.mark(readlimit);
 	}
 
@@ -151,7 +142,7 @@ class FilterServletInputStream extends ServletInputStream {
 	 * @see java.io.IOException
 	 */
 	@Override
-	synchronized public void reset() throws IOException {
+	public synchronized void reset() throws IOException {
 		in.reset();
 	}
 

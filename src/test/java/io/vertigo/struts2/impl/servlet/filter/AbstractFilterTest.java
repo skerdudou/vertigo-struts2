@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
  */
 package io.vertigo.struts2.impl.servlet.filter;
 
-import io.vertigo.lang.Option;
-
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.lang.Option;
 
 /**
  * @author npiedeloup
@@ -33,7 +33,7 @@ public class AbstractFilterTest {
 	@Test
 	public final void testExactMatch() {
 		final Option<Pattern> pattern = AbstractFilter.parsePattern("/myExactMatchTest.html");
-		Assert.assertTrue(pattern.isDefined());
+		Assert.assertTrue(pattern.isPresent());
 
 		final String uri = "http://localhost:8080/testFilter/myExactMatchTest.html";
 		final boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
@@ -43,7 +43,7 @@ public class AbstractFilterTest {
 	@Test
 	public final void testMiddleStar() {
 		final Option<Pattern> pattern = AbstractFilter.parsePattern("/my*MatchTest.html");
-		Assert.assertTrue(pattern.isDefined());
+		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myNotSeparatedStarMatchTest.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
@@ -57,7 +57,7 @@ public class AbstractFilterTest {
 	@Test
 	public final void testTwoMiddleStar() {
 		final Option<Pattern> pattern = AbstractFilter.parsePattern("/first*Match1Test.html;/other*Match2Test.html");
-		Assert.assertTrue(pattern.isDefined());
+		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/firstNotSeparatedStarMatch1Test.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
@@ -79,7 +79,7 @@ public class AbstractFilterTest {
 	@Test
 	public final void testEndStar() {
 		final Option<Pattern> pattern = AbstractFilter.parsePattern("/myEndMatchTest.*");
-		Assert.assertTrue(pattern.isDefined());
+		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myEndMatchTest.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
@@ -101,7 +101,7 @@ public class AbstractFilterTest {
 	@Test
 	public final void testTwoEndStar() {
 		final Option<Pattern> pattern = AbstractFilter.parsePattern("/myEndMatchTest.*;/myPathMatchTest/*");
-		Assert.assertTrue(pattern.isDefined());
+		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myEndMatchTest.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
@@ -128,7 +128,7 @@ public class AbstractFilterTest {
 	@Test
 	public final void testPathMatch() {
 		final Option<Pattern> pattern = AbstractFilter.parsePattern("/myPathMatchTest*");
-		Assert.assertTrue(pattern.isDefined());
+		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myPathMatchTest/andTheEnd.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());

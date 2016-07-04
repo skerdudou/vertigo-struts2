@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
  */
 package io.vertigo.struts2.impl.interceptor;
 
-import io.vertigo.lang.VUserException;
-import io.vertigo.struts2.core.AbstractActionSupport;
-import io.vertigo.struts2.core.UiError;
-import io.vertigo.struts2.core.ValidationUserException;
-
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+
+import io.vertigo.lang.VUserException;
+import io.vertigo.struts2.core.AbstractActionSupport;
+import io.vertigo.struts2.core.UiError;
+import io.vertigo.struts2.core.ValidationUserException;
 
 /**
  * Interceptor Struts des exceptions de type UserException pour ajouter les messages à la page et la réafficher.

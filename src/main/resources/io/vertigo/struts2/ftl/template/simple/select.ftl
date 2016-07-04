@@ -44,13 +44,8 @@
 <#assign paramListValue = parameters.listValue!util.getDisplayField(parameters.list) />
 <@s.iterator value="parameters.list">
         <#if paramListKey??>
-            <#if stack.findValue(paramListKey)??>
-              <#assign itemKey = stack.findValue(paramListKey)/>
-              <#assign itemKeyStr = stack.findString(paramListKey)/>
-            <#else>
-              <#assign itemKey = ''/>
-              <#assign itemKeyStr = ''/>
-            </#if>
+            <#assign itemKey = stack.findValue(paramListKey)/>
+            <#assign itemKeyStr = stack.findString(paramListKey)/>
         <#else>
             <#assign itemKey = stack.findValue('top')/>
             <#assign itemKeyStr = stack.findString('top')>
@@ -65,11 +60,7 @@
               <#assign itemValue = parameters.listValueKey />
           </#if>
         <#elseif paramListValue??>
-            <#if stack.findString(paramListValue)??>
-              <#assign itemValue = stack.findString(paramListValue)/>
-            <#else>
-              <#assign itemValue = ''/>
-            </#if>
+            <#assign itemValue = stack.findString(paramListValue)/>
         <#else>
             <#assign itemValue = stack.findString('top')/>
         </#if>
@@ -110,7 +101,7 @@
     >${itemValue?html}</option><#lt/>
 </@s.iterator>
 
-<#include "/${parameters.templateDir}/simple/optgroup.ftl" />
+<#include "/${parameters.templateDir}/${parameters.expandTheme}/optgroup.ftl" />
 
 </select><#t/>
 <#if parameters.multiple!false>

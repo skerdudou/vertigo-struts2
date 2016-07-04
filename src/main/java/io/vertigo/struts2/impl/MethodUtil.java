@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,16 @@
  */
 package io.vertigo.struts2.impl;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
+import javax.inject.Named;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
-import javax.inject.Named;
 
 /**
  * Gestion du passage de paramètres aux Actions.
@@ -49,7 +49,7 @@ public final class MethodUtil {
 	 */
 	public static Object invoke(final Object instance, final String methodName, final Container container) {
 		final Option<Method> actionMethod = findMethodByName(instance.getClass(), methodName);
-		if (actionMethod.isEmpty()) {
+		if (!actionMethod.isPresent()) {
 			throw new VSystemException("Méthode {0} non trouvée sur {1}", methodName, instance.getClass().getName());
 		}
 		actionMethod.get().setAccessible(true); //la méthode peut être protected
@@ -82,13 +82,13 @@ public final class MethodUtil {
 	public static Option<Method> findMethodByName(final Class<?> declaringClass, final String methodName) {
 		for (final Method method : declaringClass.getDeclaredMethods()) {
 			if (method.getName().equals(methodName)) {
-				return Option.some(method);
+				return Option.of(method);
 			}
 		}
 		if (declaringClass.getSuperclass() != null) {
 			return findMethodByName(declaringClass.getSuperclass(), methodName);
 		}
-		return Option.none();
+		return Option.empty();
 	}
 
 	private static Object[] findMethodParameters(final Container container, final Method method) {
@@ -106,9 +106,9 @@ public final class MethodUtil {
 		final boolean optionalParameter = isOptional(method, i);
 		if (optionalParameter) {
 			if (container.contains(id)) {
-				return Option.some(container.resolve(id, ClassUtil.getGeneric(method, i)));
+				return Option.of(container.resolve(id, ClassUtil.getGeneric(method, i)));
 			}
-			return Option.none();
+			return Option.empty();
 		}
 		final Object value = container.resolve(id, method.getParameterTypes()[i]);
 		Assertion.checkNotNull(value);

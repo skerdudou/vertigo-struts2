@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,6 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
-
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -32,6 +26,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 /**
  * Version modifiable des UiList.
@@ -107,7 +107,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 				//alors il suffit de l'enlever de la liste des éléments ajoutés.
 				addedUiObjects.remove(dto);
 			} else {
-				//Sinon on l'ajoute à la liste des éléments supprim�s.
+				//Sinon on l'ajoute à la liste des éléments supprimés.
 				removedUiObjects.add(dto);
 			}
 		}
@@ -132,8 +132,8 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		final boolean result = bufferUiObjects.add(uiObject);
 		if (result) {
 			if (removedUiObjects.contains(uiObject)) {
-				//Si on ajoute (add) un objet pr�c�demment supprimé (add),
-				//alors il suffit de l'enlever de la liste des éléments supprim�s.
+				//Si on ajoute (add) un objet précédemment supprimé (add),
+				//alors il suffit de l'enlever de la liste des éléments supprimés.
 				removedUiObjects.remove(uiObject);
 			} else {
 				addedUiObjects.add(uiObject);
@@ -146,7 +146,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 * @return List des objets supprimés
 	 */
 	public DtList<D> getRemovedList() {
-		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être valid�, pour avoir la liste des éléments supprim�s.");
+		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être validé, pour avoir la liste des éléments supprimés.");
 		//-----
 		return removedDtObjects;
 	}
@@ -155,7 +155,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 * @return List des objets ajoutés
 	 */
 	public DtList<D> getAddedList() {
-		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être valid�, pour avoir la liste des éléments ajoutés.");
+		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être validé, pour avoir la liste des éléments ajoutés.");
 		//-----
 		return addedDtObjects;
 	}
@@ -164,7 +164,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 * @return List des objets modifiés
 	 */
 	public DtList<D> getModifiedList() {
-		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être valid�, pour avoir la liste des éléments ajoutés.");
+		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être validé, pour avoir la liste des éléments ajoutés.");
 		//-----
 		return modifiedDtObjects;
 	}
@@ -174,9 +174,9 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	public UiObject<D> get(final int row) {
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.checkState(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId");
-		final UiObject<D> UiObject = bufferUiObjects.get(row);
-		Assertion.checkNotNull(UiObject);
-		return UiObject;
+		final UiObject<D> uiObject = bufferUiObjects.get(row);
+		Assertion.checkNotNull(uiObject);
+		return uiObject;
 	}
 
 	/** {@inheritDoc} */
@@ -191,13 +191,13 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	}
 
 	/**
-	 * @param UiObject UiObject recherché
+	 * @param uiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOf(final UiObject<D> UiObject) {
-		Assertion.checkNotNull(UiObject);
+	private int indexOf(final UiObject<D> uiObject) {
+		Assertion.checkNotNull(uiObject);
 		//-----
-		return bufferUiObjects.indexOf(UiObject);
+		return bufferUiObjects.indexOf(uiObject);
 	}
 
 	/**
@@ -250,7 +250,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 			}
 		}
 
-		//2. Op�rations
+		//2. Opérations
 		for (final UiObject<D> uiObject : removedUiObjects) {
 			final D dto = dtoByUiObject.get(uiObject);
 			if (dto != null) {//on ne garde que les dto qui ETAIENT dans la dtc
@@ -262,7 +262,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		for (final UiObject<D> uiObject : addedUiObjects) {
 			final D dto = dtoByUiObject.get(uiObject);
 			if (dto == null) {//on ne garde que les dto qui N'ETAIENT PAS dans la dtc
-				addedDtObjects.add(uiObject.flush()); //ce dtoInput a déjà été valid� dans la boucle sur bufferList
+				addedDtObjects.add(uiObject.flush()); //ce dtoInput a déjà été validé dans la boucle sur bufferList
 			}
 		}
 		//on vérifie avant s'il y a des elements pour le cas des listes non modifiable

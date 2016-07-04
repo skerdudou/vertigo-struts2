@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,6 @@
  */
 package io.vertigo.struts2.impl.servlet.filter;
 
-import io.vertigo.app.Home;
-import io.vertigo.lang.Option;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
-import io.vertigo.struts2.exception.SessionException;
-
 import java.io.IOException;
 import java.util.regex.Pattern;
 
@@ -34,6 +28,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import io.vertigo.app.Home;
+import io.vertigo.lang.Option;
+import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.struts2.exception.SessionException;
 
 /**
  * Filtre de gestion des sessions utilisateurs bindées sur HTTP.

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,6 @@
  */
 package io.vertigo.struts2.impl.servlet.filter;
 
-import io.vertigo.lang.Assertion;
-
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -28,6 +26,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Implémentation de javax.servlet.Filter utilisée affecter le charset de la request.

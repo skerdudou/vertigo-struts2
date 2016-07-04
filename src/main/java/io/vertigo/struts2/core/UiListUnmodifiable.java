@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,7 +56,7 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 	 * Vérifie les UiObjects de la liste, met à jour les objets métiers et retourne la liste.
 	 * @param validator Validateur à utilisé, peut-être spécifique à l'objet.
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
-	 * @return Liste métier valid�e.
+	 * @return Liste métier validée.
 	 */
 	@Override
 	public DtList<D> validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
@@ -64,11 +64,6 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 		return flush();
 	}
 
-	/**
-	 * @param validator
-	 * @param action
-	 * @param contextKey
-	 */
 	/**
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
 	 * @param validator Validateur à utilisé
@@ -95,15 +90,6 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 		}
 		clearUiObjectBuffer(); //on purge le buffer
 		return dtList;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int indexOf(final Object o) {
-		if (o instanceof DtObject) {
-			throw new UnsupportedOperationException("This list contains UiObject only. If objects are modifiable please use UiListModifiable instead of this one.");
-		}
-		return super.indexOf(o);
 	}
 
 	/** {@inheritDoc} */

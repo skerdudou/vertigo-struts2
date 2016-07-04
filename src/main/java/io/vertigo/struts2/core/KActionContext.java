@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 /**
  * Liste des couples (clé, object) enregistrés.
@@ -173,7 +173,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	/** {@inheritDoc} */
 	@Override
 	public Serializable put(final String key, final Serializable value) {
-		Assertion.checkState(!unmodifiable, "Ce context ({0}) a été fig� et n'est plus modifiable.", super.get(CTX));
+		Assertion.checkState(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX));
 		Assertion.checkArgNotEmpty(key);
 		Assertion.checkNotNull(value, "la valeur doit être renseignée pour {0}", key);
 		Assertion.checkArgument(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key);

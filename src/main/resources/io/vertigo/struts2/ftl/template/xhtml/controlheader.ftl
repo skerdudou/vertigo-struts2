@@ -4,7 +4,7 @@
  *
  */
 -->
-<#include "/${parameters.templateDir}/xhtml/controlheader-core.ftl" />
+<#include "/${parameters.templateDir}/${parameters.expandTheme}/controlheader-core.ftl" />
 <#assign currentLayout = controlLayout_type?default('none') />
 <#if currentLayout = 'table'>
 	<#assign labelColspan = parameters.labelcolspan?default(1) />

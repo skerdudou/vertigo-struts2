@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,6 @@
  */
 package io.vertigo.struts2.impl.servlet;
 
-import io.vertigo.app.App;
-import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.struts2.plugins.config.servlet.WebAppContextParamPlugin;
-import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +29,14 @@ import java.util.Properties;
 import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.struts2.plugins.config.servlet.WebAppContextParamPlugin;
+import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
 
 /**
  * @author npiedeloup
@@ -51,7 +51,7 @@ final class HomeServletStarter {
 	/** Servlet listener */
 	private final ServletListener servletListener = new ServletListener();
 
-	private App app;
+	private AutoCloseableApp app;
 
 	/**
 	 * Initialize application.
@@ -90,7 +90,7 @@ final class HomeServletStarter {
 			appConfigBuilder.withModules(getClass(), bootConf, xmlFileNamesSplit);
 
 			// Initialisation de l'état de l'application
-			app = new App(appConfigBuilder.build());
+			app = new AutoCloseableApp(appConfigBuilder.build());
 
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {

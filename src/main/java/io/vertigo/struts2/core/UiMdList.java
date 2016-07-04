@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,7 +56,7 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 	public DtList<D> obtainDtList() {
 		if (lazyDtList == null) {
 			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-				lazyDtList = storeManager.get().getDataStore().<D> getList(dtListUri);
+				lazyDtList = storeManager.get().getDataStore().<D> findAll(dtListUri);
 			}
 		}
 		return lazyDtList;
@@ -71,14 +71,14 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
-		//on surcharge equals pour eviter un appel à super.equals non d�sir� et qui forcerai le chargement de la liste
+		//on surcharge equals pour éviter un appel à super.equals non désiré et qui forcerai le chargement de la liste
 		return (o instanceof UiMdList) && dtListUri.equals(((UiMdList<?>) o).dtListUri);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
-		//on surcharge hashCode pour eviter un appel à super.hashCode non d�sir� et qui forcerai le chargement de la liste
+		//on surcharge hashCode pour eviter un appel à super.hashCode non désiré et qui forcerai le chargement de la liste
 		return dtListUri.hashCode();
 	}
 

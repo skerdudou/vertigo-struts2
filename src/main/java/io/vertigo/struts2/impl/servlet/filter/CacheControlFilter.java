@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,9 +33,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Implémentation de javax.servlet.Filter utilisée pour contr�ler la mise en cache dans le navigateur client.
+ * Implémentation de javax.servlet.Filter utilisée pour contrôler la mise en cache dans le navigateur client.
  * <br>Note : Une "limitation de la sécurité" de MSIE 5.5 (bug non présent dans Firefox) n'accepte
- * ni Cache-Control=no-cache, ni Pragma=no-cache en SSL sur les t�l�chargements de fichiers pdf, doc, xls, xml :
+ * ni Cache-Control=no-cache, ni Pragma=no-cache en SSL sur les téléchargements de fichiers pdf, doc, xls, xml :
  * remplacer Cache-Control=no-cache par max-age=1.
  * @author Emeric Vernat
  */
@@ -65,7 +65,7 @@ public final class CacheControlFilter extends AbstractFilter {
 	/**
 	 * La méthode doMyFilter est appelée par le container chaque fois qu'une paire requête/réponse passe à travers
 	 * la chaîne suite à une requête d'un client pour une ressource au bout de la chaîne.
-	 * L'instance de FilterChain pass�e dans cette méthode permet au filtre de passer la requête et la réponse
+	 * L'instance de FilterChain passée dans cette méthode permet au filtre de passer la requête et la réponse
 	 * à l'entité suivante dans la chaîne.
 	 *
 	 * Cette implémentation ajoute en headers http les paramètres d'initialisation définit dans la configuration

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,6 @@
  */
 package io.vertigo.struts2.impl.interceptor;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.struts2.core.GET;
-import io.vertigo.struts2.impl.MethodUtil;
-
 import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +26,11 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.struts2.core.GET;
+import io.vertigo.struts2.impl.MethodUtil;
 
 /**
  * Interceptor Struts limitant l'access direct aux Actions.
@@ -49,7 +49,7 @@ public class KActionRestrictAccessInterceptor extends AbstractInterceptor {
 		//on test la présence de l'annotation @GET
 		if ("GET".equals(request.getMethod()) && !"execute".equals(methodName)) {
 			final Option<Method> actionMethod = MethodUtil.findMethodByName(actionInvocation.getAction().getClass(), methodName);
-			Assertion.checkArgument(actionMethod.isDefined(), "Method {0} not found in {1}", methodName, actionInvocation.getAction().getClass());
+			Assertion.checkArgument(actionMethod.isPresent(), "Method {0} not found in {1}", methodName, actionInvocation.getAction().getClass());
 			if (!actionMethod.get().isAnnotationPresent(GET.class)) {
 				throw new IllegalAccessException("Vous ne pouvez pas appeler " + actionInvocation.getAction().getClass().getSimpleName() + "." + methodName + " directement.");
 			}

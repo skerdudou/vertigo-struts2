@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,14 +17,6 @@
  * limitations under the License.
  */
 package io.vertigo.struts2.core;
-
-import io.vertigo.app.Home;
-import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.core.param.ParamManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.struts2.context.ContextCacheManager;
-import io.vertigo.struts2.exception.ExpiredContextException;
 
 import java.io.IOException;
 import java.lang.annotation.ElementType;
@@ -43,6 +35,14 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+
+import io.vertigo.app.Home;
+import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.param.ParamManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.struts2.context.ContextCacheManager;
+import io.vertigo.struts2.exception.ExpiredContextException;
 
 /**
  * Super class des Actions struts.
@@ -232,21 +232,21 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * @return Si on est en mode edition
 	 */
 	protected final boolean isModeEdit() {
-		return context.get(MODE_CONTEXT_KEY) == FormMode.edit;
+		return FormMode.edit.equals(context.get(MODE_CONTEXT_KEY));
 	}
 
 	/**
 	 * @return Si on est en mode readOnly
 	 */
 	protected final boolean isModeRead() {
-		return context.get(MODE_CONTEXT_KEY) == FormMode.readOnly;
+		return FormMode.readOnly.equals(context.get(MODE_CONTEXT_KEY));
 	}
 
 	/**
 	 * @return Si on est en mode create
 	 */
 	protected final boolean isModeCreate() {
-		return context.get(MODE_CONTEXT_KEY) == FormMode.create;
+		return FormMode.create.equals(context.get(MODE_CONTEXT_KEY));
 	}
 
 	/**
@@ -266,7 +266,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * @return VFileResponseBuilder pour l'envoi de fichier
 	 */
 	public final VFileResponseBuilder createVFileResponseBuilder() {
-		return new VFileResponseBuilder(ServletActionContext.getRequest(), response);
+		return new VFileResponseBuilder(response);
 	}
 
 	/**

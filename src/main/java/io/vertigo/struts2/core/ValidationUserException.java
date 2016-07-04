@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -26,9 +29,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Validation exception on a object's field.

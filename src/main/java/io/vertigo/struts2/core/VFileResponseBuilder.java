@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,17 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Builder d'envoi de Fichier.
@@ -39,19 +38,15 @@ import javax.servlet.http.HttpServletResponse;
 public final class VFileResponseBuilder {
 	private static final String NOT_ALLOWED_IN_FILENAME = "\\/:*?\"<>|;";
 
-	private final HttpServletRequest httpRequest;
 	private final HttpServletResponse httpResponse;
 
 	/**
 	 * Constructeur.
-	 * @param httpRequest ServletRequest
 	 * @param httpResponse ServletResponse
 	 */
-	public VFileResponseBuilder(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
-		Assertion.checkNotNull(httpRequest);
+	public VFileResponseBuilder(final HttpServletResponse httpResponse) {
 		Assertion.checkNotNull(httpResponse);
 		//-----
-		this.httpRequest = httpRequest;
 		this.httpResponse = httpResponse;
 	}
 
@@ -83,7 +78,7 @@ public final class VFileResponseBuilder {
 		final Long length = vFile.getLength();
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Le fichier est trop gros pour être envoyé. Il fait " + length.longValue() / 1024 + " Ko, mais le maximum acceptable est de " + (Integer.MAX_VALUE / 1024) + " Ko.");
 		httpResponse.setContentLength(length.intValue());
-		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(httpRequest, vFile.getFileName(), attachment));
+		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(vFile.getFileName(), attachment));
 		httpResponse.setDateHeader("Last-Modified", vFile.getLastModified().getTime());
 		httpResponse.setContentType(vFile.getMimeType());
 
@@ -106,17 +101,15 @@ public final class VFileResponseBuilder {
 
 	/**
 	 * Encode fileName according to RFC 5987.
-	 * @param request HttpServletRequest
 	 * @param fileName String
 	 * @param isAttachment boolean is Content an attachment
 	 * @return String
 	 */
-	private static String encodeFileNameToContentDisposition(final HttpServletRequest request, final String fileName,
-			final boolean isAttachment) {
+	private static String encodeFileNameToContentDisposition(final String fileName, final boolean isAttachment) {
 		if (fileName == null) {
 			return "";
 		}
-		// on remplace par des espaces les caractères interdits dans les noms de fichiers : \ / : * ? " < > | ;
+		// on remplace par des espaces les caractères interdits dans les noms de fichiers" : \ / : * ? " < > | ;
 		final int notAllowedLength = NOT_ALLOWED_IN_FILENAME.length();
 		String cleanFileName = fileName; //only accepted char
 		for (int i = 0; i < notAllowedLength; i++) {
