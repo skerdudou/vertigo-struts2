@@ -40,32 +40,32 @@ limitations under the License. -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${vertigo.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-api</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${vertigo.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-persona-api</artifactId>
-			<version>${project.parent.version}</version>
+			<version>${vertigo.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons-impl</artifactId><!-- for ResourceResolverPlugin -->
-			<version>${project.parent.version}</version>
+			<version>${vertigo.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-impl</artifactId> <!-- for io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl and 
 				io.vertigo.dynamox.domain.formatter.Resources -->
-			<version>${project.parent.version}</version>
+			<version>${vertigo.version}</version>
 		</dependency>
 
 		<dependency>
