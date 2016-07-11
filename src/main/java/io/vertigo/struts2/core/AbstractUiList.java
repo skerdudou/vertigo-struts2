@@ -23,6 +23,7 @@ import java.util.AbstractList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -36,7 +37,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -73,7 +73,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
-		final Option<DtField> idFieldOption = getDtDefinition().getIdField();
+		final Optional<DtField> idFieldOption = getDtDefinition().getIdField();
 		if (idFieldOption.isPresent()) {
 			camelIdFieldName = StringUtil.constToLowerCamelCase(idFieldOption.get().name());
 		} else {

@@ -19,6 +19,7 @@
 package io.vertigo.struts2.impl.servlet.filter;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javax.servlet.FilterChain;
@@ -30,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import io.vertigo.app.Home;
-import io.vertigo.lang.Option;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.struts2.exception.SessionException;
@@ -56,7 +56,7 @@ public final class SecurityFilter extends AbstractFilter {
 	 */
 	private VSecurityManager securityManager;
 
-	private Option<Pattern> noAuthentificationPattern;
+	private Optional<Pattern> noAuthentificationPattern;
 
 	private boolean checkRequestAccess = false;
 
