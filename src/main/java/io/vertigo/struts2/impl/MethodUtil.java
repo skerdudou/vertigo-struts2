@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 import javax.inject.Named;
-import javax.swing.text.html.Option;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
@@ -120,7 +119,7 @@ public final class MethodUtil {
 	private static boolean isOptional(final Method method, final int i) {
 		Assertion.checkNotNull(method);
 		//-----
-		return Option.class.isAssignableFrom(method.getParameterTypes()[i]);
+		return Optional.class.isAssignableFrom(method.getParameterTypes()[i]);
 	}
 
 	private static String getNamedValue(final Annotation[] annotations) {
