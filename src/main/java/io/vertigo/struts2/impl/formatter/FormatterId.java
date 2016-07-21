@@ -41,13 +41,13 @@ public final class FormatterId implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
+	public Long stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		Assertion.checkArgument(dataType == DataType.Long, "Formatter ne s'applique qu'aux Long");
-		//-----
+		//---
+		if (StringUtil.isEmpty(strValue)) {
+			return null;
+		}
 		try {
-			if (StringUtil.isEmpty(strValue)) {
-				return null;
-			}
 			return Long.parseLong(strValue.trim());
 		} catch (final NumberFormatException e) {
 			// cas des erreurs sur les formats de nombre
@@ -59,7 +59,7 @@ public final class FormatterId implements Formatter {
 	@Override
 	public String valueToString(final Object objValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.Long, "Formatter ne s'applique qu'aux Long");
-		//-----
+		//---
 		if (objValue == null) {
 			return "";
 		}
