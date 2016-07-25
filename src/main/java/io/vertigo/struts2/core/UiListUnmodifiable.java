@@ -19,23 +19,23 @@
 package io.vertigo.struts2.core;
 
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
  * @author npiedeloup
- * @param <D> Type d'objet
+ * @param <E> the type of entity
  */
-public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList<D> implements UiList<D> {
+public final class UiListUnmodifiable<E extends Entity> extends AbstractUiList<E> implements UiList<E> {
 	private static final long serialVersionUID = 5475819598230056558L;
 
-	private final DtList<D> dtList;
+	private final DtList<E> dtList;
 
 	/**
 	 * Constructeur.
 	 * @param dtList Liste à encapsuler
 	 */
-	public UiListUnmodifiable(final DtList<D> dtList) {
+	public UiListUnmodifiable(final DtList<E> dtList) {
 		super(dtList.getDefinition());
 		//-----
 		this.dtList = dtList;
@@ -48,7 +48,7 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 
 	/** {@inheritDoc} */
 	@Override
-	protected DtList<D> obtainDtList() {
+	protected DtList<E> obtainDtList() {
 		return dtList;
 	}
 
@@ -59,7 +59,7 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 	 * @return Liste métier validée.
 	 */
 	@Override
-	public DtList<D> validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
+	public DtList<E> validate(final UiObjectValidator<E> validator, final UiMessageStack uiMessageStack) {
 		check(validator, uiMessageStack);
 		return flush();
 	}
@@ -70,10 +70,10 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 */
 	@Override
-	public void check(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
+	public void check(final UiObjectValidator<E> validator, final UiMessageStack uiMessageStack) {
 		//1. check Error => KUserException
 		//on valide les éléments internes
-		for (final UiObject<D> uiObject : getUiObjectBuffer()) {
+		for (final UiObject<E> uiObject : getUiObjectBuffer()) {
 			uiObject.check(validator, uiMessageStack);
 		}
 	}
@@ -82,10 +82,10 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 	 * @return met à jour les objets métiers et retourne la liste.
 	 */
 	@Override
-	public DtList<D> flush() {
+	public DtList<E> flush() {
 		//1. check Error => KUserException
 		//on valide les éléments internes
-		for (final UiObject<D> dtoInput : getUiObjectBuffer()) {
+		for (final UiObject<E> dtoInput : getUiObjectBuffer()) {
 			dtoInput.flush();
 		}
 		clearUiObjectBuffer(); //on purge le buffer

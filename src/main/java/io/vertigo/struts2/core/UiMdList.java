@@ -20,20 +20,20 @@ package io.vertigo.struts2.core;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
  * @author npiedeloup
- * @param <D> Type d'objet
+ * @param <E> the type of entity
  */
-final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements UiList<D> {
+final class UiMdList<E extends Entity> extends AbstractUiList<E> implements UiList<E> {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	private final DtListURI dtListUri;
-	private transient DtList<D> lazyDtList;
+	private transient DtList<E> lazyDtList;
 
 	/**
 	 * Constructeur.
@@ -53,10 +53,10 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 	 * @return Liste des données
 	 */
 	@Override
-	public DtList<D> obtainDtList() {
+	public DtList<E> obtainDtList() {
 		if (lazyDtList == null) {
 			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-				lazyDtList = storeManager.get().getDataStore().<D> findAll(dtListUri);
+				lazyDtList = storeManager.get().getDataStore().<E> findAll(dtListUri);
 			}
 		}
 		return lazyDtList;
@@ -84,19 +84,19 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<D> validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
+	public DtList<E> validate(final UiObjectValidator<E> validator, final UiMessageStack uiMessageStack) {
 		return obtainDtList();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void check(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
+	public void check(final UiObjectValidator<E> validator, final UiMessageStack uiMessageStack) {
 		//rien
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<D> flush() {
+	public DtList<E> flush() {
 		return obtainDtList();
 	}
 }
