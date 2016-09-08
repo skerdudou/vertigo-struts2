@@ -40,6 +40,7 @@ import com.sleepycat.je.Transaction;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -53,10 +54,6 @@ import io.vertigo.struts2.impl.context.ContextCachePlugin;
  * @author pchretien, npiedeloup
  */
 public final class BerkeleyContextCachePlugin implements Activeable, ContextCachePlugin {
-
-	private static final String USER_HOME = "user.home";
-	private static final String USER_DIR = "user.dir";
-	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
 	private static final Logger LOGGER = Logger.getLogger(BerkeleyContextCachePlugin.class);
 	private final TupleBinding<CacheValue> cacheValueBinding;
@@ -80,7 +77,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
-		final String translatedCachePath = translatePath(cachePath);
+		final String translatedCachePath = FileUtil.translatePath(cachePath);
 		myCacheEnvPath = new File(translatedCachePath);
 		myCacheEnvPath.mkdirs();
 		Assertion.checkState(myCacheEnvPath.canWrite(), "L'espace de stockage du cache n'est pas accessible ({0})", myCacheEnvPath.getAbsolutePath());
@@ -89,12 +86,6 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 
 		final int purgePeriod = Math.min(15 * 60, timeToLiveSeconds);
 		daemonManager.registerDaemon("purgeContextCache", RemoveTooOldElementsDaemon.class, purgePeriod, this);
-	}
-
-	private static String translatePath(final String path) {
-		return path.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
-				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
-				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 
 	/** {@inheritDoc} */
