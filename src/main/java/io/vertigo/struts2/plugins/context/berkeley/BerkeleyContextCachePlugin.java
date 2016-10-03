@@ -85,7 +85,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		cacheValueBinding = new CacheValueBinding(new SerializableBinding(codecManager.getCompressedSerializationCodec()));
 
 		final int purgePeriod = Math.min(15 * 60, timeToLiveSeconds);
-		daemonManager.registerDaemon("purgeContextCache", RemoveTooOldElementsDaemon.class, purgePeriod, this);
+		daemonManager.registerDaemon("purgeContextCache", () -> new RemoveTooOldElementsDaemon(this), purgePeriod);
 	}
 
 	/** {@inheritDoc} */
