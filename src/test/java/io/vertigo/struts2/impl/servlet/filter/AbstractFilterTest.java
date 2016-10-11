@@ -18,12 +18,11 @@
  */
 package io.vertigo.struts2.impl.servlet.filter;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import io.vertigo.lang.Option;
 
 /**
  * @author npiedeloup
@@ -32,7 +31,7 @@ public class AbstractFilterTest {
 
 	@Test
 	public final void testExactMatch() {
-		final Option<Pattern> pattern = AbstractFilter.parsePattern("/myExactMatchTest.html");
+		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/myExactMatchTest.html");
 		Assert.assertTrue(pattern.isPresent());
 
 		final String uri = "http://localhost:8080/testFilter/myExactMatchTest.html";
@@ -42,7 +41,7 @@ public class AbstractFilterTest {
 
 	@Test
 	public final void testMiddleStar() {
-		final Option<Pattern> pattern = AbstractFilter.parsePattern("/my*MatchTest.html");
+		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/my*MatchTest.html");
 		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myNotSeparatedStarMatchTest.html";
@@ -56,7 +55,7 @@ public class AbstractFilterTest {
 
 	@Test
 	public final void testTwoMiddleStar() {
-		final Option<Pattern> pattern = AbstractFilter.parsePattern("/first*Match1Test.html;/other*Match2Test.html");
+		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/first*Match1Test.html;/other*Match2Test.html");
 		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/firstNotSeparatedStarMatch1Test.html";
@@ -78,7 +77,7 @@ public class AbstractFilterTest {
 
 	@Test
 	public final void testEndStar() {
-		final Option<Pattern> pattern = AbstractFilter.parsePattern("/myEndMatchTest.*");
+		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/myEndMatchTest.*");
 		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myEndMatchTest.html";
@@ -100,7 +99,7 @@ public class AbstractFilterTest {
 
 	@Test
 	public final void testTwoEndStar() {
-		final Option<Pattern> pattern = AbstractFilter.parsePattern("/myEndMatchTest.*;/myPathMatchTest/*");
+		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/myEndMatchTest.*;/myPathMatchTest/*");
 		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myEndMatchTest.html";
@@ -127,7 +126,7 @@ public class AbstractFilterTest {
 
 	@Test
 	public final void testPathMatch() {
-		final Option<Pattern> pattern = AbstractFilter.parsePattern("/myPathMatchTest*");
+		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/myPathMatchTest*");
 		Assert.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myPathMatchTest/andTheEnd.html";

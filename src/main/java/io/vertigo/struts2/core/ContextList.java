@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.lang.Assertion;
 
@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  * @param <O> Type d'objet
  */
-public final class ContextList<O extends DtObject> {
+public final class ContextList<O extends Entity> {
 	private final AbstractActionSupport action;
 	private final UiMessageStack uiMessageStack;
 	private final String contextKey;
@@ -102,9 +102,9 @@ public final class ContextList<O extends DtObject> {
 
 	/**
 	 * Criteria unique Id.
-	 * @param <O> Object type
+	 * @param <E> Object type
 	 */
-	static final class UuidCriteria<O extends DtObject> implements Criteria<O> {
+	static final class UuidCriteria<E extends Entity> implements Criteria<E> {
 		private static final long serialVersionUID = -5967571928701007323L;
 		private final UUID uuid = UUID.randomUUID();
 

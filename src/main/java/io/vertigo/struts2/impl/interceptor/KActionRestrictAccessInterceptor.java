@@ -19,6 +19,7 @@
 package io.vertigo.struts2.impl.interceptor;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +29,6 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.struts2.core.GET;
 import io.vertigo.struts2.impl.MethodUtil;
 
@@ -48,7 +48,7 @@ public class KActionRestrictAccessInterceptor extends AbstractInterceptor {
 		//si on est en GET, et que l'on appelle une action spécifique (autre que execute)
 		//on test la présence de l'annotation @GET
 		if ("GET".equals(request.getMethod()) && !"execute".equals(methodName)) {
-			final Option<Method> actionMethod = MethodUtil.findMethodByName(actionInvocation.getAction().getClass(), methodName);
+			final Optional<Method> actionMethod = MethodUtil.findMethodByName(actionInvocation.getAction().getClass(), methodName);
 			Assertion.checkArgument(actionMethod.isPresent(), "Method {0} not found in {1}", methodName, actionInvocation.getAction().getClass());
 			if (!actionMethod.get().isAnnotationPresent(GET.class)) {
 				throw new IllegalAccessException("Vous ne pouvez pas appeler " + actionInvocation.getAction().getClass().getSimpleName() + "." + methodName + " directement.");

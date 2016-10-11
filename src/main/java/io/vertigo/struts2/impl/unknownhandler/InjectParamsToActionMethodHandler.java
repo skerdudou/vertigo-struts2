@@ -19,6 +19,7 @@
 package io.vertigo.struts2.impl.unknownhandler;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -28,7 +29,6 @@ import com.opensymphony.xwork2.UnknownHandler;
 import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 
-import io.vertigo.lang.Option;
 import io.vertigo.struts2.impl.MethodUtil;
 import io.vertigo.struts2.impl.servlet.RequestContainerWrapper;
 import io.vertigo.util.StringUtil;
@@ -62,7 +62,7 @@ public class InjectParamsToActionMethodHandler implements UnknownHandler {
 	/** {@inheritDoc} */
 	@Override
 	public Object handleUnknownActionMethod(final Object action, final String methodName) throws NoSuchMethodException {
-		Option<Method> actionMethod = MethodUtil.findMethodByName(action.getClass(), methodName);
+		Optional<Method> actionMethod = MethodUtil.findMethodByName(action.getClass(), methodName);
 		if (!actionMethod.isPresent()) {
 			//method non trouvée, on test doXXX comme struts2 le fait de base
 			final String prefixedMethodName = getPrefixedMethodName(methodName);

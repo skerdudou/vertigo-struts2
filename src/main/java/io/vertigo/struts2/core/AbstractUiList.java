@@ -23,6 +23,7 @@ import java.util.AbstractList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -31,20 +32,20 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
  * @author npiedeloup
- * @param <D> Type d'objet
+ * @param <E> the type of entity
  */
-public abstract class AbstractUiList<D extends DtObject> extends AbstractList<UiObject<D>> implements Serializable {
+public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiObject<E>> implements Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	private static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
@@ -58,8 +59,8 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 */
 	protected final ComponentRef<VTransactionManager> transactionManager = ComponentRef.makeLazyRef(VTransactionManager.class);
 
-	private final Map<Integer, UiObject<D>> uiObjectByIndex = new HashMap<>();
-	private final Map<String, Map<String, UiObject<D>>> uiObjectByFieldValue = new HashMap<>();
+	private final Map<Integer, UiObject<E>> uiObjectByIndex = new HashMap<>();
+	private final Map<String, Map<String, UiObject<E>>> uiObjectByFieldValue = new HashMap<>();
 
 	//==========================================================================
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
@@ -73,7 +74,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
-		final Option<DtField> idFieldOption = getDtDefinition().getIdField();
+		final Optional<DtField> idFieldOption = getDtDefinition().getIdField();
 		if (idFieldOption.isPresent()) {
 			camelIdFieldName = StringUtil.constToLowerCamelCase(idFieldOption.get().name());
 		} else {
@@ -97,8 +98,8 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 * @param keyFieldName Nom du champs à indexer
 	 */
 	public final void initUiObjectByKeyIndex(final String keyFieldName) {
-		final Map<String, UiObject<D>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
-		for (final UiObject<D> uiObject : this) {
+		final Map<String, UiObject<E>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
+		for (final UiObject<E> uiObject : this) {
 			uiObjectById.put((String) uiObject.get(keyFieldName), uiObject);
 		}
 	}
@@ -108,7 +109,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 * Peut-être appelé souvant : doit assurer un cache local (transient au besoin) si chargement.
 	 * @return Liste des éléments
 	 */
-	protected abstract DtList<D> obtainDtList();
+	protected abstract DtList<E> obtainDtList();
 
 	/**
 	 * @return DtDefinition de l'objet métier
@@ -119,8 +120,8 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 
 	/** {@inheritDoc} */
 	@Override
-	public final UiObject<D> get(final int index) {
-		UiObject<D> element = uiObjectByIndex.get(index);
+	public final UiObject<E> get(final int index) {
+		UiObject<E> element = uiObjectByIndex.get(index);
 		if (element == null) {
 			element = new UiObject<>(obtainDtList().get(index));
 			uiObjectByIndex.put(index, element);
@@ -141,7 +142,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 		if (o instanceof DtObject) {
 			return indexOf((DtObject) o);
 		} else if (o instanceof UiObject) {
-			return indexOf((UiObject<D>) o);
+			return indexOf((UiObject<E>) o);
 		}
 		return super.indexOf(o);
 	}
@@ -150,7 +151,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 * @param UiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOf(final UiObject<D> UiObject) {
+	private int indexOf(final UiObject<E> UiObject) {
 		Assertion.checkNotNull(UiObject);
 		//-----
 		return obtainDtList().indexOf(UiObject.getInnerObject());
@@ -174,26 +175,26 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 * @return UiObject
 	 * @throws FormatterException Format error
 	 */
-	public UiObject<D> getById(final String keyFieldName, final String keyValueAsString) throws FormatterException {
-		final Map<String, UiObject<D>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
-		UiObject<D> uiObject = uiObjectById.get(keyValueAsString);
+	public UiObject<E> getById(final String keyFieldName, final String keyValueAsString) throws FormatterException {
+		final Map<String, UiObject<E>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
+		UiObject<E> uiObject = uiObjectById.get(keyValueAsString);
 		if (uiObject == null) {
 			final DtField dtField = getDtDefinition().getField(StringUtil.camelToConstCase(keyFieldName));
 			Assertion.checkArgument(dtField.getType() == FieldType.ID, "La clé {0} de la liste doit être la PK", keyFieldName);
 
 			final Object key = dtField.getDomain().getFormatter().stringToValue(keyValueAsString, dtField.getDomain().getDataType());
-			final D dto = loadDto(key);
-			uiObject = new UiObject<>(dto);
+			final E entity = loadDto(key);
+			uiObject = new UiObject<>(entity);
 			uiObjectById.put(keyValueAsString, uiObject);
 			Assertion.checkState(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		}
 		return uiObject;
 	}
 
-	private D loadDto(final Object key) {
+	private E loadDto(final Object key) {
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return storeManager.get().getDataStore().<D> read(new URI<D>(getDtDefinition(), key));
+			return storeManager.get().getDataStore().<E> read(new URI<E>(getDtDefinition(), key));
 		}
 	}
 
@@ -202,8 +203,8 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 * @param keyFieldName Nom du champ identifiant
 	 * @return Index des UiObjects par Id
 	 */
-	protected final Map<String, UiObject<D>> obtainUiObjectByIdMap(final String keyFieldName) {
-		Map<String, UiObject<D>> uiObjectById = uiObjectByFieldValue.get(keyFieldName);
+	protected final Map<String, UiObject<E>> obtainUiObjectByIdMap(final String keyFieldName) {
+		Map<String, UiObject<E>> uiObjectById = uiObjectByFieldValue.get(keyFieldName);
 		if (uiObjectById == null) {
 			uiObjectById = new HashMap<>();
 			uiObjectByFieldValue.put(keyFieldName, uiObjectById);
@@ -214,7 +215,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	/**
 	 * @return Liste des uiObjects bufferisés (potentiellement modifiés).
 	 */
-	protected final Collection<UiObject<D>> getUiObjectBuffer() {
+	protected final Collection<UiObject<E>> getUiObjectBuffer() {
 		return uiObjectByIndex.values();
 	}
 

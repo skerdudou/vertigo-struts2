@@ -20,12 +20,12 @@ package io.vertigo.struts2.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import javax.inject.Named;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 
@@ -48,7 +48,7 @@ public final class MethodUtil {
 	 * @return R Valeur retournée par l'invocation
 	 */
 	public static Object invoke(final Object instance, final String methodName, final Container container) {
-		final Option<Method> actionMethod = findMethodByName(instance.getClass(), methodName);
+		final Optional<Method> actionMethod = findMethodByName(instance.getClass(), methodName);
 		if (!actionMethod.isPresent()) {
 			throw new VSystemException("Méthode {0} non trouvée sur {1}", methodName, instance.getClass().getName());
 		}
@@ -79,16 +79,16 @@ public final class MethodUtil {
 	 * @param methodName Nom de la méthode
 	 * @return Option de la première méthode trouvée.
 	 */
-	public static Option<Method> findMethodByName(final Class<?> declaringClass, final String methodName) {
+	public static Optional<Method> findMethodByName(final Class<?> declaringClass, final String methodName) {
 		for (final Method method : declaringClass.getDeclaredMethods()) {
 			if (method.getName().equals(methodName)) {
-				return Option.of(method);
+				return Optional.of(method);
 			}
 		}
 		if (declaringClass.getSuperclass() != null) {
 			return findMethodByName(declaringClass.getSuperclass(), methodName);
 		}
-		return Option.empty();
+		return Optional.empty();
 	}
 
 	private static Object[] findMethodParameters(final Container container, final Method method) {
@@ -106,9 +106,9 @@ public final class MethodUtil {
 		final boolean optionalParameter = isOptional(method, i);
 		if (optionalParameter) {
 			if (container.contains(id)) {
-				return Option.of(container.resolve(id, ClassUtil.getGeneric(method, i)));
+				return Optional.of(container.resolve(id, ClassUtil.getGeneric(method, i)));
 			}
-			return Option.empty();
+			return Optional.empty();
 		}
 		final Object value = container.resolve(id, method.getParameterTypes()[i]);
 		Assertion.checkNotNull(value);
@@ -119,7 +119,7 @@ public final class MethodUtil {
 	private static boolean isOptional(final Method method, final int i) {
 		Assertion.checkNotNull(method);
 		//-----
-		return Option.class.isAssignableFrom(method.getParameterTypes()[i]);
+		return Optional.class.isAssignableFrom(method.getParameterTypes()[i]);
 	}
 
 	private static String getNamedValue(final Annotation[] annotations) {

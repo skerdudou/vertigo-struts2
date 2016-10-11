@@ -20,7 +20,7 @@ package io.vertigo.struts2.core;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
@@ -29,7 +29,7 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  * @param <O> Type d'objet
  */
-public final class ContextMdl<O extends DtObject> {
+public final class ContextMdl<O extends Entity> {
 	private final AbstractActionSupport action;
 	private final String contextKey;
 

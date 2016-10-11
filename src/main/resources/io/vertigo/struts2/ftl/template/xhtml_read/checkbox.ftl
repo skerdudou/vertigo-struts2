@@ -34,7 +34,7 @@
 	        <#include "/${parameters.templateDir}/simple_read/checkbox.ftl" />
 	<#else>
 		<#include "/${parameters.templateDir}/${parameters.theme}/controllabel.ftl" />
-		<#if parameters.label??><br/></#if>
+		<br/>
 		<#include "/${parameters.templateDir}/simple_read/checkbox.ftl" />
 	</#if>
 	<#include "/${parameters.templateDir}/xhtml/controlfooter.ftl" />
@@ -65,8 +65,10 @@
 		${stack.setValue('#controlLayout_currentColumnCount', columnCount)}
 		<#include "/${parameters.templateDir}/xhtml/controlfooter-trlogic.ftl" />
 	<#else>
-		<#include "/${parameters.templateDir}/simple_read/checkbox.ftl" /> 
-		<#include "/${parameters.templateDir}/${parameters.theme}/controllabel.ftl" />
+		<#include "/${parameters.templateDir}/simple_read/checkbox.ftl" />
+		<#if parameters.label??> 
+			<#include "/${parameters.templateDir}/${parameters.theme}/controllabel.ftl" />
+		</#if>
 	</#if>
 </#if>
 		
