@@ -1,10 +1,20 @@
 Version history
 ===============
 
-Running 0.9.3-SNAPSHOT
+Running 0.9.4-SNAPSHOT
 ----------------------
 
 more to come :)
+
+
+
+Release 0.9.3 - 2016/10/11
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-092-to-093)
+
+__In Bold__ : Potential compatibility problems 
+* [All] Code cleaning, refactoring and documenting
+[Struts2] Fixed checkbox without label
 
 
 
