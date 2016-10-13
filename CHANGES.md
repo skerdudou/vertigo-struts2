@@ -14,7 +14,7 @@ Release 0.9.3 - 2016/10/11
 
 __In Bold__ : Potential compatibility problems 
 * [All] Code cleaning, refactoring and documenting
-[Struts2] Fixed checkbox without label
+* [Struts2] Fixed checkbox without label
 
 
 
@@ -24,7 +24,7 @@ Release 0.9.2 - 2016/06/28
 
 __In Bold__ : Potential compatibility problems 
 * [All] Code cleaning, refactoring and documenting
-*	[Struts2] Fixed #3 : delete cache element in tx
+*  [Struts2] Fixed #3 : delete cache element in tx
 * __[Struts2] Upgrade vertigo (9.2) and other libs version (struts 2.3.28.1)__
 * [Struts2] Fixed #4 fully implements of indexOf in UiListUnmodifiable
 
@@ -39,6 +39,6 @@ __In Bold__ : Potential compatibility problems
 * [Struts2] Refactored cache config and renamed FieldType Primarykey to ID
 * [Struts2] Moved EhCachePlugin to vertigo-commons
 * [Struts2] Fixed deamon issue
-* [Struts2] Update to servlet 3.1.0	
+* [Struts2] Update to servlet 3.1.0  
 * [Struts2] Code style
 
