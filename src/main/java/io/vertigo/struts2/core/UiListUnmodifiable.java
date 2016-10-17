@@ -18,6 +18,8 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.stream.Collectors;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.Entity;
 
@@ -73,9 +75,9 @@ public final class UiListUnmodifiable<E extends Entity> extends AbstractUiList<E
 	public void check(final UiObjectValidator<E> validator, final UiMessageStack uiMessageStack) {
 		//1. check Error => KUserException
 		//on valide les éléments internes
-		for (final UiObject<E> uiObject : getUiObjectBuffer()) {
-			uiObject.check(validator, uiMessageStack);
-		}
+		getUiObjectBuffer()
+				.stream()
+				.forEach(uiObject -> uiObject.check(validator, uiMessageStack));
 	}
 
 	/**
@@ -85,9 +87,10 @@ public final class UiListUnmodifiable<E extends Entity> extends AbstractUiList<E
 	public DtList<E> flush() {
 		//1. check Error => KUserException
 		//on valide les éléments internes
-		for (final UiObject<E> dtoInput : getUiObjectBuffer()) {
-			dtoInput.flush();
-		}
+		getUiObjectBuffer()
+				.stream()
+				.forEach(uiObject -> uiObject.flush());
+
 		clearUiObjectBuffer(); //on purge le buffer
 		return dtList;
 	}
@@ -95,12 +98,12 @@ public final class UiListUnmodifiable<E extends Entity> extends AbstractUiList<E
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("uiList(" + dtList.size() + " element(s)");
-		for (int i = 0; i < Math.min(dtList.size(), 50); i++) {
-			sb.append("; ");
-			sb.append(get(i));
-		}
-		sb.append(")");
-		return sb.toString();
+		return dtList
+				.stream()
+				.limit(50) //we consider only the first 50 elements
+				.map(dto -> dto.toString())
+				.collect(Collectors.joining("; ",
+						"uiList(" + dtList.size() + " element(s) :",
+						")"));
 	}
 }
