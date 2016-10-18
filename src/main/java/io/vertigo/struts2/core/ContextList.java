@@ -18,12 +18,8 @@
  */
 package io.vertigo.struts2.core;
 
-import java.util.UUID;
-
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.store.criteria.Criteria;
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -31,21 +27,17 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  * @param <O> Type d'objet
  */
-public final class ContextList<O extends Entity> {
+public final class ContextList<O extends DtObject> {
 	private final AbstractActionSupport action;
 	private final UiMessageStack uiMessageStack;
 	private final String contextKey;
 	private final UiObjectValidator validator;
 
-	//	public static <O extends DtObject> ContextForm<O> create(final String contextKey, final AbstractActionSupport action) {
-	//		return new ContextForm<O>(contextKey, action);
-	//	}
-
 	/**
-	 * Constructeur.
-	 * @param contextKey Clé dans le context
-	 * @param action Action struts
-	 */
+	* Constructeur.
+	* @param contextKey Clé dans le context
+	* @param action Action struts
+	*/
 	public ContextList(final String contextKey, final AbstractActionSupport action) {
 		this(contextKey, new UiObjectValidator(), action);
 	}
@@ -72,10 +64,6 @@ public final class ContextList<O extends Entity> {
 	 * @param dtList List à publier
 	 */
 	public void publish(final DtList<O> dtList) {
-		if (dtList.getURI() == null) {
-			//if no URI, we add a unique one, to manage this list lifecycle.
-			dtList.setURI(new DtListURIForCriteria<>(dtList.getDefinition(), new UuidCriteria<O>(), dtList.size()));
-		}
 		action.getModel().put(contextKey, new UiListUnmodifiable<>(dtList));
 	}
 
@@ -100,27 +88,4 @@ public final class ContextList<O extends Entity> {
 		return action.getModel().getUiList(contextKey);
 	}
 
-	/**
-	 * Criteria unique Id.
-	 * @param <E> Object type
-	 */
-	static final class UuidCriteria<E extends Entity> implements Criteria<E> {
-		private static final long serialVersionUID = -5967571928701007323L;
-		private final UUID uuid = UUID.randomUUID();
-
-		/** {@inheritDoc} */
-		@Override
-		public int hashCode() {
-			return uuid.hashCode();
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public boolean equals(final Object o) {
-			if (o instanceof UuidCriteria) {
-				return uuid.equals(((UuidCriteria<?>) o).uuid);
-			}
-			return false;
-		}
-	}
 }
