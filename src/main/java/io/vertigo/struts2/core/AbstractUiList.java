@@ -43,9 +43,9 @@ import io.vertigo.util.StringUtil;
 /**
  * Wrapper d'affichage des listes d'objets métier.
  * @author npiedeloup
- * @param <E> the type of entity
+ * @param <O> the type of entity
  */
-public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiObject<E>> implements Serializable {
+public abstract class AbstractUiList<O extends DtObject> extends AbstractList<UiObject<O>> implements Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	private static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
@@ -59,8 +59,8 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 	 */
 	protected final ComponentRef<VTransactionManager> transactionManager = ComponentRef.makeLazyRef(VTransactionManager.class);
 
-	private final Map<Integer, UiObject<E>> uiObjectByIndex = new HashMap<>();
-	private final Map<String, Map<String, UiObject<E>>> uiObjectByFieldValue = new HashMap<>();
+	private final Map<Integer, UiObject<O>> uiObjectByIndex = new HashMap<>();
+	private final Map<String, Map<String, UiObject<O>>> uiObjectByFieldValue = new HashMap<>();
 
 	//==========================================================================
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
@@ -98,8 +98,8 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 	 * @param keyFieldName Nom du champs à indexer
 	 */
 	public final void initUiObjectByKeyIndex(final String keyFieldName) {
-		final Map<String, UiObject<E>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
-		for (final UiObject<E> uiObject : this) {
+		final Map<String, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
+		for (final UiObject<O> uiObject : this) {
 			uiObjectById.put((String) uiObject.get(keyFieldName), uiObject);
 		}
 	}
@@ -109,7 +109,7 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 	 * Peut-être appelé souvant : doit assurer un cache local (transient au besoin) si chargement.
 	 * @return Liste des éléments
 	 */
-	protected abstract DtList<E> obtainDtList();
+	protected abstract DtList<O> obtainDtList();
 
 	/**
 	 * @return DtDefinition de l'objet métier
@@ -120,8 +120,8 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 
 	/** {@inheritDoc} */
 	@Override
-	public final UiObject<E> get(final int index) {
-		UiObject<E> element = uiObjectByIndex.get(index);
+	public final UiObject<O> get(final int index) {
+		UiObject<O> element = uiObjectByIndex.get(index);
 		if (element == null) {
 			element = new UiObject<>(obtainDtList().get(index));
 			uiObjectByIndex.put(index, element);
@@ -142,7 +142,7 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 		if (o instanceof DtObject) {
 			return indexOf((DtObject) o);
 		} else if (o instanceof UiObject) {
-			return indexOf((UiObject<E>) o);
+			return indexOf((UiObject<O>) o);
 		}
 		return super.indexOf(o);
 	}
@@ -151,7 +151,7 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 	 * @param UiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOf(final UiObject<E> UiObject) {
+	private int indexOf(final UiObject<O> UiObject) {
 		Assertion.checkNotNull(UiObject);
 		//-----
 		return obtainDtList().indexOf(UiObject.getInnerObject());
@@ -175,15 +175,15 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 	 * @return UiObject
 	 * @throws FormatterException Format error
 	 */
-	public UiObject<E> getById(final String keyFieldName, final String keyValueAsString) throws FormatterException {
-		final Map<String, UiObject<E>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
-		UiObject<E> uiObject = uiObjectById.get(keyValueAsString);
+	public UiObject<O> getById(final String keyFieldName, final String keyValueAsString) throws FormatterException {
+		final Map<String, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
+		UiObject<O> uiObject = uiObjectById.get(keyValueAsString);
 		if (uiObject == null) {
 			final DtField dtField = getDtDefinition().getField(StringUtil.camelToConstCase(keyFieldName));
 			Assertion.checkArgument(dtField.getType() == FieldType.ID, "La clé {0} de la liste doit être la PK", keyFieldName);
 
 			final Object key = dtField.getDomain().getFormatter().stringToValue(keyValueAsString, dtField.getDomain().getDataType());
-			final E entity = loadDto(key);
+			final O entity = (O) loadDto(key);
 			uiObject = new UiObject<>(entity);
 			uiObjectById.put(keyValueAsString, uiObject);
 			Assertion.checkState(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
@@ -191,10 +191,10 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 		return uiObject;
 	}
 
-	private E loadDto(final Object key) {
+	private Entity loadDto(final Object key) {
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return storeManager.get().getDataStore().<E> read(new URI<E>(getDtDefinition(), key));
+			return storeManager.get().getDataStore().<Entity> read(new URI<>(getDtDefinition(), key));
 		}
 	}
 
@@ -203,8 +203,8 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 	 * @param keyFieldName Nom du champ identifiant
 	 * @return Index des UiObjects par Id
 	 */
-	protected final Map<String, UiObject<E>> obtainUiObjectByIdMap(final String keyFieldName) {
-		Map<String, UiObject<E>> uiObjectById = uiObjectByFieldValue.get(keyFieldName);
+	protected final Map<String, UiObject<O>> obtainUiObjectByIdMap(final String keyFieldName) {
+		Map<String, UiObject<O>> uiObjectById = uiObjectByFieldValue.get(keyFieldName);
 		if (uiObjectById == null) {
 			uiObjectById = new HashMap<>();
 			uiObjectByFieldValue.put(keyFieldName, uiObjectById);
@@ -215,7 +215,7 @@ public abstract class AbstractUiList<E extends Entity> extends AbstractList<UiOb
 	/**
 	 * @return Liste des uiObjects bufferisés (potentiellement modifiés).
 	 */
-	protected final Collection<UiObject<E>> getUiObjectBuffer() {
+	protected final Collection<UiObject<O>> getUiObjectBuffer() {
 		return uiObjectByIndex.values();
 	}
 
