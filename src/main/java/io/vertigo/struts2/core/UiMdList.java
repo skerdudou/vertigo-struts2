@@ -19,7 +19,7 @@
 package io.vertigo.struts2.core;
 
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURI;
+import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
@@ -32,19 +32,20 @@ import io.vertigo.lang.Assertion;
 final class UiMdList<E extends Entity> extends AbstractUiList<E> implements UiList<E> {
 	private static final long serialVersionUID = 5475819598230056558L;
 
-	private final DtListURI dtListUri;
+	private final DtListURIForMasterData dtListURIForMasterData;
 	private transient DtList<E> lazyDtList;
 
 	/**
 	 * Constructeur.
 	 *
-	 * @param dtListUri Uri de la Liste à encapsuler
+	 * @param dtListURIForMasterData Uri de la Liste à encapsuler
 	 */
-	public UiMdList(final DtListURI dtListUri) {
-		super(dtListUri.getDtDefinition());
-		Assertion.checkArgument(storeManager.get().getMasterDataConfig().containsMasterData(dtListUri.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.", dtListUri.getDtDefinition().getName());
+	public UiMdList(final DtListURIForMasterData dtListURIForMasterData) {
+		super(dtListURIForMasterData.getDtDefinition());
+		Assertion.checkArgument(storeManager.get().getMasterDataConfig().containsMasterData(dtListURIForMasterData.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.",
+				dtListURIForMasterData.getDtDefinition().getName());
 		// -------------------------------------------------------------------------
-		this.dtListUri = dtListUri;
+		this.dtListURIForMasterData = dtListURIForMasterData;
 	}
 
 	// ==========================================================================
@@ -56,7 +57,7 @@ final class UiMdList<E extends Entity> extends AbstractUiList<E> implements UiLi
 	public DtList<E> obtainDtList() {
 		if (lazyDtList == null) {
 			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-				lazyDtList = storeManager.get().getDataStore().<E> findAll(dtListUri);
+				lazyDtList = storeManager.get().getDataStore().<E> findAll(dtListURIForMasterData);
 			}
 		}
 		return lazyDtList;
@@ -65,21 +66,24 @@ final class UiMdList<E extends Entity> extends AbstractUiList<E> implements UiLi
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "uiMdList(" + dtListUri.toString() + (lazyDtList != null ? ", loaded:" + lazyDtList.size() : "") + " )";
+		return "uiMdList(" + dtListURIForMasterData.toString() + (lazyDtList != null ? ", loaded:" + lazyDtList.size() : "") + " )";
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
 		//on surcharge equals pour éviter un appel à super.equals non désiré et qui forcerai le chargement de la liste
-		return (o instanceof UiMdList) && dtListUri.equals(((UiMdList<?>) o).dtListUri);
+		if (o instanceof UiMdList) {
+			return dtListURIForMasterData.equals(((UiMdList<?>) o).dtListURIForMasterData);
+		}
+		return false;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		//on surcharge hashCode pour eviter un appel à super.hashCode non désiré et qui forcerai le chargement de la liste
-		return dtListUri.hashCode();
+		return dtListURIForMasterData.hashCode();
 	}
 
 	/** {@inheritDoc} */
