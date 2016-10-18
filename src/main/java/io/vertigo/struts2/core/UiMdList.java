@@ -38,7 +38,7 @@ final class UiMdList<E extends Entity> extends AbstractUiList<E> implements UiLi
 	/**
 	 * Constructeur.
 	 *
-	 * @param dtListUri Uri de la Liste à encapsuler
+	 * @param dtListURIForMasterData Uri de la Liste à encapsuler
 	 */
 	public UiMdList(final DtListURIForMasterData dtListURIForMasterData) {
 		super(dtListURIForMasterData.getDtDefinition());
