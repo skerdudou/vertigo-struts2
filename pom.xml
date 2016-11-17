@@ -51,7 +51,7 @@ limitations under the License. -->
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-api</artifactId>
+			<artifactId>vertigo-vega-impl</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
 
