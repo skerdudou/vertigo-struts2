@@ -64,8 +64,8 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiObject du context
 	 */
-	public <O extends DtObject> UiObject<O> getUiObject(final String key) {
-		return (UiObject<O>) get(key);
+	public <O extends DtObject> StrutsUiObject<O> getUiObject(final String key) {
+		return (StrutsUiObject<O>) get(key);
 	}
 
 	/**
@@ -134,7 +134,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 * @param uiObject UiObject recherché
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
-	public String findKey(final UiObject<?> uiObject) {
+	public String findKey(final StrutsUiObject<?> uiObject) {
 		Assertion.checkNotNull(uiObject);
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(uiObject);
@@ -182,9 +182,9 @@ public final class KActionContext extends HashMap<String, Serializable> {
 		if (CTX.equals(key)) { //struts tente de mettre a jour la clé lors de la reception de la request
 			return value;
 		}
-		if (value instanceof UiObject) {
+		if (value instanceof StrutsUiObject) {
 			reverseUiObjectIndex.put(value, key);
-			reverseUiObjectIndex.put(((UiObject<?>) value).getInnerObject(), key);
+			reverseUiObjectIndex.put(((StrutsUiObject<?>) value).getServerSideObject(), key);
 		} else if (value instanceof UiList) {
 			reverseUiListIndex.put((UiList<?>) value, key);
 		}

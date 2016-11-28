@@ -21,6 +21,10 @@ package io.vertigo.struts2.core;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
+import io.vertigo.vega.webservice.validation.DtObjectValidator;
+import io.vertigo.vega.webservice.validation.UiMessageStack;
+import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 /**
  * Liste des couples (clé, object) enregistrés.
@@ -31,7 +35,7 @@ public final class ContextListModifiable<O extends DtObject> {
 	private final AbstractActionSupport action;
 	private final UiMessageStack uiMessageStack;
 	private final String contextKey;
-	private final UiObjectValidator validator;
+	private final DtObjectValidator<O> validator;
 
 	//	public static <O extends DtObject> ContextForm<O> create(final String contextKey, final AbstractActionSupport action) {
 	//		return new ContextForm<O>(contextKey, action);
@@ -43,7 +47,7 @@ public final class ContextListModifiable<O extends DtObject> {
 	 * @param action Action struts
 	 */
 	public ContextListModifiable(final String contextKey, final AbstractActionSupport action) {
-		this(contextKey, new UiObjectValidator(), action);
+		this(contextKey, new DefaultDtObjectValidator<O>(), action);
 	}
 
 	/**
@@ -52,7 +56,7 @@ public final class ContextListModifiable<O extends DtObject> {
 	 * @param validator Validator a utiliser
 	 * @param action Action struts
 	 */
-	public ContextListModifiable(final String contextKey, final UiObjectValidator validator, final AbstractActionSupport action) {
+	public ContextListModifiable(final String contextKey, final DtObjectValidator<O> validator, final AbstractActionSupport action) {
 		Assertion.checkArgNotEmpty(contextKey);
 		Assertion.checkNotNull(action);
 		Assertion.checkNotNull(validator);
@@ -68,27 +72,35 @@ public final class ContextListModifiable<O extends DtObject> {
 	 * @param dtList List à publier
 	 */
 	public void publish(final DtList<O> dtList) {
-		action.getModel().put(contextKey, new UiListModifiable<>(dtList));
+		action.getModel().put(contextKey, new UiListModifiable<>(dtList, contextKey));
 	}
 
 	/**
 	 * Vérifie les erreurs de la liste. Celles-ci sont ajoutées à l'uiMessageStack si nécessaire.
 	 */
 	public void checkErrors() {
-		action.getModel().getUiList(contextKey).check(validator, uiMessageStack);
+		getUiListModifiable().checkFormat(uiMessageStack);
+		if (uiMessageStack.hasErrors()) {
+			throw new ValidationUserException();
+		}
 	}
 
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
 	public DtList<O> readDtList() {
-		return action.getModel().<O> getUiList(contextKey).validate(validator, uiMessageStack);
+		checkErrors();
+		final DtList<O> validatedList = getUiListModifiable().mergeAndCheckInput(validator, uiMessageStack);
+		if (uiMessageStack.hasErrors()) {
+			throw new ValidationUserException();
+		}
+		return validatedList;
 	}
 
 	/**
 	 * @return List des objets d'IHM. Peut contenir des erreurs.
 	 */
 	public UiListModifiable<O> getUiListModifiable() {
-		return action.getModel().getUiListModifiable(contextKey);
+		return action.getModel().<O> getUiListModifiable(contextKey);
 	}
 }

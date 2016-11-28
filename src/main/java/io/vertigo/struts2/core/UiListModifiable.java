@@ -21,6 +21,7 @@ package io.vertigo.struts2.core;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +33,9 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.vega.webservice.model.UiObject;
+import io.vertigo.vega.webservice.validation.DtObjectValidator;
+import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Version modifiable des UiList.
@@ -43,13 +47,15 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	private static final long serialVersionUID = -8398542301760300787L;
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 
+	private final String inputKey;
+
 	// Index
-	private final Map<UiObject<D>, D> dtoByUiObject = new HashMap<>();
+	private final Map<StrutsUiObject<D>, D> dtoByUiObject = new HashMap<>();
 
 	// Buffer
-	private final List<UiObject<D>> removedUiObjects = new ArrayList<>();
-	private final List<UiObject<D>> addedUiObjects = new ArrayList<>();
-	private final List<UiObject<D>> bufferUiObjects;
+	private final List<StrutsUiObject<D>> removedUiObjects = new ArrayList<>();
+	private final List<StrutsUiObject<D>> addedUiObjects = new ArrayList<>();
+	private final List<StrutsUiObject<D>> bufferUiObjects;
 
 	// Data
 	private final DtList<D> removedDtObjects;
@@ -61,10 +67,11 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 * Constructor.
 	 * @param dtList Inner DtList
 	 */
-	UiListModifiable(final DtList<D> dtList) {
+	UiListModifiable(final DtList<D> dtList, final String inputKey) {
 		Assertion.checkNotNull(dtList);
 		//-----
 		this.dtList = dtList;
+		this.inputKey = inputKey;
 		final DtDefinition dtDefinition = dtList.getDefinition();
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 
@@ -81,7 +88,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		bufferUiObjects.clear();
 		for (int row = 0; row < dtList.size(); row++) {
 			final D dto = dtList.get(row);
-			final UiObject<D> uiObjects = new UiObject<>(dto);
+			final StrutsUiObject<D> uiObjects = new StrutsUiObject<>(dto);
 			bufferUiObjects.add(uiObjects);
 			dtoByUiObject.put(uiObjects, dto);
 		}
@@ -99,7 +106,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 * @param dto Element to removed
 	 * @return If element was removed
 	 */
-	public boolean remove(final UiObject<D> dto) {
+	public boolean remove(final StrutsUiObject<D> dto) {
 		final boolean result = bufferUiObjects.remove(dto);
 		if (result) {
 			if (addedUiObjects.contains(dto)) {
@@ -116,8 +123,8 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 	/** {@inheritDoc} */
 	@Override
-	public UiObject<D> remove(final int index) {
-		final UiObject<D> dto = get(index);
+	public StrutsUiObject<D> remove(final int index) {
+		final StrutsUiObject<D> dto = get(index);
 		final boolean result = remove(dto);
 		Assertion.checkState(result, "Erreur de suppression i={0}", index);
 		return dto;
@@ -128,7 +135,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 * @return true (as specified by Collection.add)
 	 */
 	public boolean add(final D dto) {
-		final UiObject<D> uiObject = new UiObject<>(dto);
+		final StrutsUiObject<D> uiObject = new StrutsUiObject<>(dto);
 		final boolean result = bufferUiObjects.add(uiObject);
 		if (result) {
 			if (removedUiObjects.contains(uiObject)) {
@@ -171,10 +178,10 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 	/** {@inheritDoc} */
 	@Override
-	public UiObject<D> get(final int row) {
+	public StrutsUiObject<D> get(final int row) {
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.checkState(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId");
-		final UiObject<D> uiObject = bufferUiObjects.get(row);
+		final StrutsUiObject<D> uiObject = bufferUiObjects.get(row);
 		Assertion.checkNotNull(uiObject);
 		return uiObject;
 	}
@@ -184,8 +191,8 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	public int indexOf(final Object o) {
 		if (o instanceof DtObject) {
 			return indexOf((DtObject) o);
-		} else if (o instanceof UiObject) {
-			return indexOf((UiObject<D>) o);
+		} else if (o instanceof StrutsUiObject) {
+			return indexOf((StrutsUiObject<D>) o);
 		}
 		return super.indexOf(o);
 	}
@@ -194,7 +201,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 * @param uiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOf(final UiObject<D> uiObject) {
+	private int indexOf(final StrutsUiObject<D> uiObject) {
 		Assertion.checkNotNull(uiObject);
 		//-----
 		return bufferUiObjects.indexOf(uiObject);
@@ -208,7 +215,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		Assertion.checkNotNull(dtObject);
 		//-----
 		for (int i = 0; i < bufferUiObjects.size(); i++) {
-			if (bufferUiObjects.get(i).getInnerObject().equals(dtObject)) {
+			if (bufferUiObjects.get(i).getServerSideObject().equals(dtObject)) {
 				return i;
 			}
 		}
@@ -223,17 +230,19 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 	/** {@inheritDoc} */
 	@Override
-	public void check(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
+	public void checkFormat(final UiMessageStack uiMessageStack) {
 		//1. check Error => KUserException
 		//on valide les éléments internes
-		for (final UiObject<D> uiObject : bufferUiObjects) {
-			uiObject.check(validator, uiMessageStack);
+		for (final StrutsUiObject<D> uiObject : bufferUiObjects) {
+			uiObject.setInputKey(inputKey + ".get(" + indexOf(uiObject) + ")");
+			uiObject.checkFormat(uiMessageStack);
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<D> flush() {
+	public DtList<D> mergeAndCheckInput(final DtObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
+		checkFormat(uiMessageStack);
 		removedDtObjects.clear();
 		addedDtObjects.clear();
 		modifiedDtObjects.clear();
@@ -242,16 +251,17 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		//on valide les éléments internes
 		for (final UiObject<D> uiObject : bufferUiObjects) {
 			if (uiObject.isModified()) {
+				final D validatedDto = uiObject.mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 				if (!addedUiObjects.contains(uiObject)) {
-					modifiedDtObjects.add(uiObject.flush());
+					modifiedDtObjects.add(validatedDto);
 				} else {
-					uiObject.flush();
+					addedDtObjects.add(validatedDto);
 				}
 			}
 		}
 
 		//2. Opérations
-		for (final UiObject<D> uiObject : removedUiObjects) {
+		for (final StrutsUiObject<D> uiObject : removedUiObjects) {
 			final D dto = dtoByUiObject.get(uiObject);
 			if (dto != null) {//on ne garde que les dto qui ETAIENT dans la dtc
 				removedDtObjects.add(dto);
@@ -259,12 +269,6 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 			}
 		}
 
-		for (final UiObject<D> uiObject : addedUiObjects) {
-			final D dto = dtoByUiObject.get(uiObject);
-			if (dto == null) {//on ne garde que les dto qui N'ETAIENT PAS dans la dtc
-				addedDtObjects.add(uiObject.flush()); //ce dtoInput a déjà été validé dans la boucle sur bufferList
-			}
-		}
 		//on vérifie avant s'il y a des elements pour le cas des listes non modifiable
 		//il faudrait plutot que la DtListInput soit non modifiable aussi
 		if (!addedDtObjects.isEmpty()) {
@@ -281,13 +285,6 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		addedUiObjects.clear(); //on purge le buffer
 		rebuildBuffer();
 		return dtList;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DtList<D> validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
-		check(validator, uiMessageStack);
-		return flush();
 	}
 
 	/** {@inheritDoc} */
@@ -317,9 +314,9 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 		/** {@inheritDoc} */
 		@Override
-		public UiObject<D> next() {
+		public StrutsUiObject<D> next() {
 			checkForComodification();
-			final UiObject<D> next = get(currentIndex);
+			final StrutsUiObject<D> next = get(currentIndex);
 			currentIndex++;
 			return next;
 		}

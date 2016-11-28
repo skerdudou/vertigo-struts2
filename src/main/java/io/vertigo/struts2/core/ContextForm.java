@@ -18,8 +18,14 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.Collections;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
+import io.vertigo.vega.webservice.validation.DtObjectValidator;
+import io.vertigo.vega.webservice.validation.UiMessageStack;
+import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 /**
  * Liste des couples (clé, object) enregistrés.
@@ -30,7 +36,7 @@ public final class ContextForm<O extends DtObject> {
 	private final AbstractActionSupport action;
 	private final UiMessageStack uiMessageStack;
 	private final String contextKey;
-	private final UiObjectValidator validator;
+	private final DtObjectValidator<O> validator;
 
 	//	public static <O extends DtObject> ContextForm<O> create(final String contextKey, final AbstractActionSupport action) {
 	//		return new ContextForm<O>(contextKey, action);
@@ -42,7 +48,7 @@ public final class ContextForm<O extends DtObject> {
 	 * @param action Action struts
 	 */
 	public ContextForm(final String contextKey, final AbstractActionSupport action) {
-		this(contextKey, new UiObjectValidator(), action);
+		this(contextKey, new DefaultDtObjectValidator<O>(), action);
 	}
 
 	/**
@@ -51,7 +57,7 @@ public final class ContextForm<O extends DtObject> {
 	 * @param validator Validator a utiliser
 	 * @param action Action struts
 	 */
-	public ContextForm(final String contextKey, final UiObjectValidator validator, final AbstractActionSupport action) {
+	public ContextForm(final String contextKey, final DtObjectValidator<O> validator, final AbstractActionSupport action) {
 		Assertion.checkArgNotEmpty(contextKey);
 		Assertion.checkNotNull(action);
 		Assertion.checkNotNull(validator);
@@ -67,27 +73,38 @@ public final class ContextForm<O extends DtObject> {
 	 * @param dto Objet à publier
 	 */
 	public void publish(final O dto) {
-		action.getModel().put(contextKey, new UiObject<>(dto));
+		final StrutsUiObject<O> strutsUiObject = new StrutsUiObject<>(dto);
+		strutsUiObject.setInputKey(contextKey);
+		action.getModel().put(contextKey, strutsUiObject);
 	}
 
 	/**
 	 * Vérifie les erreurs de l'objet. Celles-ci sont ajoutées à l'uiMessageStack si nécessaire.
 	 */
 	public void checkErrors() {
-		action.getModel().getUiObject(contextKey).check(validator, uiMessageStack);
+		getUiObject().checkFormat(uiMessageStack);
+		if (uiMessageStack.hasErrors()) {
+			throw new ValidationUserException();
+		}
 	}
 
 	/**
 	 * @return objet métier valid�. Lance une exception si erreur.
 	 */
 	public O readDto() {
-		return (O) action.getModel().getUiObject(contextKey).validate(validator, uiMessageStack);
+		checkErrors();
+		// ---
+		final O validatedDto = getUiObject().mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
+		if (uiMessageStack.hasErrors()) {
+			throw new ValidationUserException();
+		}
+		return validatedDto;
 	}
 
 	/**
 	 * @return Objet d'IHM. Peut contenir des erreurs.
 	 */
-	public UiObject<O> getUiObject() {
+	public StrutsUiObject<O> getUiObject() {
 		return action.getModel().<O> getUiObject(contextKey);
 	}
 }

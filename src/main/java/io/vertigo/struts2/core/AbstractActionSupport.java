@@ -81,14 +81,14 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	@Inject
 	private ParamManager paramManager;
 
-	private final UiMessageStack uiMessageStack;
+	private final StrutsUiMessageStack uiMessageStack;
 
 	/**
 	 * Constructeur.
 	 */
 	protected AbstractActionSupport() {
 		Injector.injectMembers(this, Home.getApp().getComponentSpace());
-		uiMessageStack = new UiMessageStack(this);
+		uiMessageStack = new StrutsUiMessageStack(this);
 	}
 
 	/** {@inheritDoc} */
@@ -272,7 +272,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	/**
 	 * @return Pile des messages utilisateur.
 	 */
-	public final UiMessageStack getUiMessageStack() {
+	public final StrutsUiMessageStack getUiMessageStack() {
 		return uiMessageStack;
 	}
 

@@ -39,6 +39,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
@@ -59,7 +60,7 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	 */
 	protected final ComponentRef<VTransactionManager> transactionManager = ComponentRef.makeLazyRef(VTransactionManager.class);
 
-	private final Map<Integer, UiObject<O>> uiObjectByIndex = new HashMap<>();
+	private final Map<Integer, StrutsUiObject<O>> uiObjectByIndex = new HashMap<>();
 	private final Map<String, Map<String, UiObject<O>>> uiObjectByFieldValue = new HashMap<>();
 
 	//==========================================================================
@@ -100,7 +101,7 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	public final void initUiObjectByKeyIndex(final String keyFieldName) {
 		final Map<String, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
 		for (final UiObject<O> uiObject : this) {
-			uiObjectById.put((String) uiObject.get(keyFieldName), uiObject);
+			uiObjectById.put(uiObject.getStringValue(keyFieldName), uiObject);
 		}
 	}
 
@@ -120,10 +121,10 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 
 	/** {@inheritDoc} */
 	@Override
-	public final UiObject<O> get(final int index) {
-		UiObject<O> element = uiObjectByIndex.get(index);
+	public final StrutsUiObject<O> get(final int index) {
+		StrutsUiObject<O> element = uiObjectByIndex.get(index);
 		if (element == null) {
-			element = new UiObject<>(obtainDtList().get(index));
+			element = new StrutsUiObject<>(obtainDtList().get(index));
 			uiObjectByIndex.put(index, element);
 			Assertion.checkState(uiObjectByIndex.size() < 1000, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
 		}
@@ -141,8 +142,8 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	public int indexOf(final Object o) {
 		if (o instanceof DtObject) {
 			return indexOf((DtObject) o);
-		} else if (o instanceof UiObject) {
-			return indexOf((UiObject<O>) o);
+		} else if (o instanceof StrutsUiObject) {
+			return indexOf((StrutsUiObject<O>) o);
 		}
 		return super.indexOf(o);
 	}
@@ -151,10 +152,10 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	 * @param UiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOf(final UiObject<O> UiObject) {
+	private int indexOf(final StrutsUiObject<O> UiObject) {
 		Assertion.checkNotNull(UiObject);
 		//-----
-		return obtainDtList().indexOf(UiObject.getInnerObject());
+		return obtainDtList().indexOf(UiObject.getServerSideObject());
 	}
 
 	/**
@@ -184,7 +185,7 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 
 			final Object key = dtField.getDomain().getFormatter().stringToValue(keyValueAsString, dtField.getDomain().getDataType());
 			final O entity = (O) loadDto(key);
-			uiObject = new UiObject<>(entity);
+			uiObject = new StrutsUiObject<>(entity);
 			uiObjectById.put(keyValueAsString, uiObject);
 			Assertion.checkState(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		}
@@ -215,7 +216,7 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	/**
 	 * @return Liste des uiObjects bufferisés (potentiellement modifiés).
 	 */
-	protected final Collection<UiObject<O>> getUiObjectBuffer() {
+	protected final Collection<StrutsUiObject<O>> getUiObjectBuffer() {
 		return uiObjectByIndex.values();
 	}
 

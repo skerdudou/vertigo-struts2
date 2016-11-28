@@ -25,8 +25,7 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 import io.vertigo.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport;
-import io.vertigo.struts2.core.UiError;
-import io.vertigo.struts2.core.ValidationUserException;
+import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 /**
  * Interceptor Struts des exceptions de type UserException pour ajouter les messages à la page et la réafficher.
@@ -42,13 +41,7 @@ public class VUserExceptionInterceptor extends AbstractInterceptor {
 			return actionInvocation.invoke();
 		} catch (final ValidationUserException e) {
 			final AbstractActionSupport action = (AbstractActionSupport) actionInvocation.getAction();
-			for (final UiError uiError : e.getUiErrors()) {
-				if (uiError.getDtObject() != null) {
-					action.getUiMessageStack().error(uiError.getErrorMessage().getDisplay(), uiError.getDtObject(), uiError.getFieldName());
-				} else {
-					action.getUiMessageStack().error(uiError.getErrorMessage().getDisplay());
-				}
-			}
+			e.flushToUiMessageStack(action.getUiMessageStack());
 			return Action.NONE;
 		} catch (final VUserException e) {
 			final ActionSupport action = (ActionSupport) actionInvocation.getAction();

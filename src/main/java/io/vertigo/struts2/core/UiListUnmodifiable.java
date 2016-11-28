@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.vega.webservice.validation.DtObjectValidator;
+import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
@@ -61,9 +63,8 @@ public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList
 	 * @return Liste métier validée.
 	 */
 	@Override
-	public DtList<O> validate(final UiObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
-		check(validator, uiMessageStack);
-		return flush();
+	public DtList<O> mergeAndCheckInput(final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+		return dtList;
 	}
 
 	/**
@@ -72,27 +73,8 @@ public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 */
 	@Override
-	public void check(final UiObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
-		//1. check Error => KUserException
-		//on valide les éléments internes
-		getUiObjectBuffer()
-				.stream()
-				.forEach(uiObject -> uiObject.check(validator, uiMessageStack));
-	}
-
-	/**
-	 * @return met à jour les objets métiers et retourne la liste.
-	 */
-	@Override
-	public DtList<O> flush() {
-		//1. check Error => KUserException
-		//on valide les éléments internes
-		getUiObjectBuffer()
-				.stream()
-				.forEach(uiObject -> uiObject.flush());
-
-		clearUiObjectBuffer(); //on purge le buffer
-		return dtList;
+	public void checkFormat(final UiMessageStack uiMessageStack) {
+		// nothing for unmodifiable (we don't use the data in the buffers)
 	}
 
 	/** {@inheritDoc} */

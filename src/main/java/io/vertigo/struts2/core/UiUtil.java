@@ -52,7 +52,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiObject Object du context
 	 * @return Nom de l'object dans le context
 	 */
-	public static String contextKey(final UiObject<?> uiObject) {
+	public static String contextKey(final StrutsUiObject<?> uiObject) {
 		final ActionContext actionContext = ActionContext.getContext();
 		final KActionContext kActionContext = ((AbstractActionSupport) actionContext.getActionInvocation().getAction()).getModel();
 		return kActionContext.findKey(uiObject);
@@ -63,7 +63,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiObject Objet de la liste
 	 * @return index de l'objet dans sa liste
 	 */
-	public static int indexOf(final List<?> uiList, final UiObject<?> uiObject) {
+	public static int indexOf(final List<?> uiList, final StrutsUiObject<?> uiObject) {
 		return uiList.indexOf(uiObject);
 	}
 
@@ -127,11 +127,11 @@ public final class UiUtil implements Serializable {
 		final ActionContext actionContext = ActionContext.getContext();
 		final Object contextObject = actionContext.getValueStack().findValue(contextKey);
 		Assertion.checkNotNull(contextObject, "{0} n''est pas dans le context", contextKey);
-		Assertion.checkArgument(contextObject instanceof UiObject || contextObject instanceof AbstractUiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey, contextObject.getClass().getSimpleName());
+		Assertion.checkArgument(contextObject instanceof StrutsUiObject || contextObject instanceof AbstractUiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey, contextObject.getClass().getSimpleName());
 
 		final DtDefinition dtDefinition;
-		if (contextObject instanceof UiObject) {
-			dtDefinition = ((UiObject<?>) contextObject).getDtDefinition();
+		if (contextObject instanceof StrutsUiObject) {
+			dtDefinition = ((StrutsUiObject<?>) contextObject).getDtDefinition();
 		} else {
 			dtDefinition = ((AbstractUiList<?>) contextObject).getDtDefinition();
 		}

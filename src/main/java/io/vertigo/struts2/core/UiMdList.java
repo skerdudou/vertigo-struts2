@@ -23,6 +23,8 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.vega.webservice.validation.DtObjectValidator;
+import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
@@ -88,19 +90,14 @@ final class UiMdList<E extends Entity> extends AbstractUiList<E> implements UiLi
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<E> validate(final UiObjectValidator<E> validator, final UiMessageStack uiMessageStack) {
+	public DtList<E> mergeAndCheckInput(final DtObjectValidator<E> validator, final UiMessageStack uiMessageStack) {
 		return obtainDtList();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void check(final UiObjectValidator<E> validator, final UiMessageStack uiMessageStack) {
+	public void checkFormat(final UiMessageStack uiMessageStack) {
 		//rien
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public DtList<E> flush() {
-		return obtainDtList();
-	}
 }
