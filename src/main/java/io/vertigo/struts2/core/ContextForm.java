@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -73,7 +74,7 @@ public final class ContextForm<O extends DtObject> {
 	 * @param dto Objet à publier
 	 */
 	public void publish(final O dto) {
-		final StrutsUiObject<O> strutsUiObject = new StrutsUiObject<>(dto);
+		final UiObject<O> strutsUiObject = new StrutsUiObject<>(dto);
 		strutsUiObject.setInputKey(contextKey);
 		action.getModel().put(contextKey, strutsUiObject);
 	}
@@ -104,7 +105,7 @@ public final class ContextForm<O extends DtObject> {
 	/**
 	 * @return Objet d'IHM. Peut contenir des erreurs.
 	 */
-	public StrutsUiObject<O> getUiObject() {
+	public UiObject<O> getUiObject() {
 		return action.getModel().<O> getUiObject(contextKey);
 	}
 }

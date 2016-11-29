@@ -27,6 +27,8 @@ import java.util.UUID;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.vega.webservice.model.UiList;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * Liste des couples (clé, object) enregistrés.
@@ -64,8 +66,8 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiObject du context
 	 */
-	public <O extends DtObject> StrutsUiObject<O> getUiObject(final String key) {
-		return (StrutsUiObject<O>) get(key);
+	public <O extends DtObject> UiObject<O> getUiObject(final String key) {
+		return (UiObject<O>) get(key);
 	}
 
 	/**
@@ -80,8 +82,8 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiListModifiable du context
 	 */
-	public <O extends DtObject> UiListModifiable<O> getUiListModifiable(final String key) {
-		return (UiListModifiable<O>) get(key);
+	public <O extends DtObject> StrutsUiListModifiable<O> getUiListModifiable(final String key) {
+		return (StrutsUiListModifiable<O>) get(key);
 	}
 
 	/**
@@ -134,7 +136,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 * @param uiObject UiObject recherché
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
-	public String findKey(final StrutsUiObject<?> uiObject) {
+	public String findKey(final UiObject<?> uiObject) {
 		Assertion.checkNotNull(uiObject);
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(uiObject);
@@ -182,9 +184,9 @@ public final class KActionContext extends HashMap<String, Serializable> {
 		if (CTX.equals(key)) { //struts tente de mettre a jour la clé lors de la reception de la request
 			return value;
 		}
-		if (value instanceof StrutsUiObject) {
+		if (value instanceof UiObject) {
 			reverseUiObjectIndex.put(value, key);
-			reverseUiObjectIndex.put(((StrutsUiObject<?>) value).getServerSideObject(), key);
+			reverseUiObjectIndex.put(((UiObject<?>) value).getServerSideObject(), key);
 		} else if (value instanceof UiList) {
 			reverseUiListIndex.put((UiList<?>) value, key);
 		}

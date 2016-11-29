@@ -18,6 +18,8 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.Collections;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -74,7 +76,7 @@ public final class ContextList<O extends DtObject> {
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
 	public DtList<O> readDtList() {
-		return ((UiListUnmodifiable<O>) action.getModel().<O> getUiList(contextKey)).mergeAndCheckInput(validator, uiMessageStack);
+		return ((UiListUnmodifiable<O>) action.getModel().<O> getUiList(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 	}
 
 }

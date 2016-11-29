@@ -30,6 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * Class utilitaire pour le rendu des pages en jsp/ftl.
@@ -52,7 +53,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiObject Object du context
 	 * @return Nom de l'object dans le context
 	 */
-	public static String contextKey(final StrutsUiObject<?> uiObject) {
+	public static String contextKey(final UiObject<?> uiObject) {
 		final ActionContext actionContext = ActionContext.getContext();
 		final KActionContext kActionContext = ((AbstractActionSupport) actionContext.getActionInvocation().getAction()).getModel();
 		return kActionContext.findKey(uiObject);
@@ -63,7 +64,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiObject Objet de la liste
 	 * @return index de l'objet dans sa liste
 	 */
-	public static int indexOf(final List<?> uiList, final StrutsUiObject<?> uiObject) {
+	public static int indexOf(final List<?> uiList, final UiObject<?> uiObject) {
 		return uiList.indexOf(uiObject);
 	}
 
@@ -105,7 +106,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ display de cette liste
 	 */
-	public static String getDisplayField(final AbstractUiList<?> uiList) {
+	public static String getDisplayField(final AbstractUiListUnmodifiable<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
 		return StringUtil.constToLowerCamelCase(dtDefinition.getDisplayField().get().getName());
 	}
@@ -114,7 +115,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ de l'id de cette liste
 	 */
-	public static String getIdField(final AbstractUiList<?> uiList) {
+	public static String getIdField(final AbstractUiListUnmodifiable<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
 		return StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
 	}
@@ -127,13 +128,14 @@ public final class UiUtil implements Serializable {
 		final ActionContext actionContext = ActionContext.getContext();
 		final Object contextObject = actionContext.getValueStack().findValue(contextKey);
 		Assertion.checkNotNull(contextObject, "{0} n''est pas dans le context", contextKey);
-		Assertion.checkArgument(contextObject instanceof StrutsUiObject || contextObject instanceof AbstractUiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey, contextObject.getClass().getSimpleName());
+		Assertion.checkArgument(contextObject instanceof UiObject || contextObject instanceof AbstractUiListUnmodifiable, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
+				contextObject.getClass().getSimpleName());
 
 		final DtDefinition dtDefinition;
-		if (contextObject instanceof StrutsUiObject) {
-			dtDefinition = ((StrutsUiObject<?>) contextObject).getDtDefinition();
+		if (contextObject instanceof UiObject) {
+			dtDefinition = ((UiObject<?>) contextObject).getDtDefinition();
 		} else {
-			dtDefinition = ((AbstractUiList<?>) contextObject).getDtDefinition();
+			dtDefinition = ((AbstractUiListUnmodifiable<?>) contextObject).getDtDefinition();
 		}
 		Assertion.checkNotNull(dtDefinition); //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		Assertion.checkNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());

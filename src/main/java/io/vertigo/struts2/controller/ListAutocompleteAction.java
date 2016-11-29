@@ -35,9 +35,8 @@ import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport;
 import io.vertigo.struts2.core.ContextRef;
-import io.vertigo.struts2.core.UiList;
 import io.vertigo.util.StringUtil;
-import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
+import io.vertigo.vega.webservice.model.UiList;
 
 /**
  * Service web de l'autocomplete des listes.
@@ -73,7 +72,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		if (!(contextList instanceof UiList)) {
 			throw new VUserException(new MessageText("La liste n'est pas du bon type {0}", null, listRef.get()));
 		}
-		final DtList<D> list = ((UiList<D>) contextList).mergeAndCheckInput(new DefaultDtObjectValidator<>(), getUiMessageStack());
+		final DtList<D> list = ((UiList<D>) contextList).mergeAndCheckInput(Collections.EMPTY_LIST, getUiMessageStack());
 		final DtDefinition dtDefinition = list.getDefinition();
 		//-----
 		final DtField idField;

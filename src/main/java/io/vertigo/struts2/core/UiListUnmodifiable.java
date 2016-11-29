@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.model.DtList;
@@ -30,7 +31,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  * @param <O> the type of entity
  */
-public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList<O> implements UiList<O> {
+public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiListUnmodifiable<O> {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	private final DtList<O> dtList;
@@ -58,12 +59,12 @@ public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList
 
 	/**
 	 * Vérifie les UiObjects de la liste, met à jour les objets métiers et retourne la liste.
-	 * @param validator Validateur à utilisé, peut-être spécifique à l'objet.
+	 * @param validators Validateur à utilisé, peut-être spécifique à l'objet.
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 * @return Liste métier validée.
 	 */
 	@Override
-	public DtList<O> mergeAndCheckInput(final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+	public DtList<O> mergeAndCheckInput(final List<DtObjectValidator<O>> validators, final UiMessageStack uiMessageStack) {
 		return dtList;
 	}
 
@@ -88,4 +89,5 @@ public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList
 						"uiList(" + dtList.size() + " element(s) :",
 						")"));
 	}
+
 }

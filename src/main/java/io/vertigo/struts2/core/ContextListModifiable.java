@@ -18,6 +18,8 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.Collections;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -72,7 +74,7 @@ public final class ContextListModifiable<O extends DtObject> {
 	 * @param dtList List à publier
 	 */
 	public void publish(final DtList<O> dtList) {
-		action.getModel().put(contextKey, new UiListModifiable<>(dtList, contextKey));
+		action.getModel().put(contextKey, new StrutsUiListModifiable<>(dtList, contextKey));
 	}
 
 	/**
@@ -90,7 +92,7 @@ public final class ContextListModifiable<O extends DtObject> {
 	 */
 	public DtList<O> readDtList() {
 		checkErrors();
-		final DtList<O> validatedList = getUiListModifiable().mergeAndCheckInput(validator, uiMessageStack);
+		final DtList<O> validatedList = getUiListModifiable().mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
 		}
@@ -100,7 +102,7 @@ public final class ContextListModifiable<O extends DtObject> {
 	/**
 	 * @return List des objets d'IHM. Peut contenir des erreurs.
 	 */
-	public UiListModifiable<O> getUiListModifiable() {
+	public StrutsUiListModifiable<O> getUiListModifiable() {
 		return action.getModel().<O> getUiListModifiable(contextKey);
 	}
 }

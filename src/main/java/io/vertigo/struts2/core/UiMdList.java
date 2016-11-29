@@ -18,6 +18,8 @@
  */
 package io.vertigo.struts2.core;
 
+import java.util.List;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
@@ -31,8 +33,9 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  * @param <E> the type of entity
  */
-final class UiMdList<E extends Entity> extends AbstractUiList<E> implements UiList<E> {
-	private static final long serialVersionUID = 5475819598230056558L;
+final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
+
+	private static final long serialVersionUID = 4914912057762557563L;
 
 	private final DtListURIForMasterData dtListURIForMasterData;
 	private transient DtList<E> lazyDtList;
@@ -90,7 +93,7 @@ final class UiMdList<E extends Entity> extends AbstractUiList<E> implements UiLi
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<E> mergeAndCheckInput(final DtObjectValidator<E> validator, final UiMessageStack uiMessageStack) {
+	public DtList<E> mergeAndCheckInput(final List<DtObjectValidator<E>> validator, final UiMessageStack uiMessageStack) {
 		return obtainDtList();
 	}
 

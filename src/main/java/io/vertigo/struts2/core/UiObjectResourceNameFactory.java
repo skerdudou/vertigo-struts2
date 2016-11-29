@@ -42,7 +42,7 @@ public final class UiObjectResourceNameFactory implements ResourceNameFactory {
 	/** {@inheritDoc} */
 	@Override
 	public String toResourceName(final Object value) {
-		Assertion.checkArgument(value instanceof StrutsUiObject, "La resource est un {0}, elle doit être un UiObject", value.getClass().getSimpleName());
+		Assertion.checkArgument(value instanceof UiObject, "La resource est un {0}, elle doit être un UiObject", value.getClass().getSimpleName());
 		//-----
 		return beanResourceNameFactory.toResourceName(((UiObject) value).getServerSideObject());
 	}

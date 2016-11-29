@@ -38,7 +38,9 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
+import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
@@ -46,7 +48,7 @@ import io.vertigo.vega.webservice.model.UiObject;
  * @author npiedeloup
  * @param <O> the type of entity
  */
-public abstract class AbstractUiList<O extends DtObject> extends AbstractList<UiObject<O>> implements Serializable {
+public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	private static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
@@ -60,7 +62,7 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	 */
 	protected final ComponentRef<VTransactionManager> transactionManager = ComponentRef.makeLazyRef(VTransactionManager.class);
 
-	private final Map<Integer, StrutsUiObject<O>> uiObjectByIndex = new HashMap<>();
+	private final Map<Integer, UiObject<O>> uiObjectByIndex = new HashMap<>();
 	private final Map<String, Map<String, UiObject<O>>> uiObjectByFieldValue = new HashMap<>();
 
 	//==========================================================================
@@ -71,7 +73,7 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	 * Constructeur.
 	 * @param dtDefinition DtDefinition
 	 */
-	AbstractUiList(final DtDefinition dtDefinition) {
+	AbstractUiListUnmodifiable(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
@@ -81,6 +83,11 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 		} else {
 			camelIdFieldName = null;
 		}
+	}
+
+	@Override
+	public Class<O> getObjectType() {
+		return (Class<O>) ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
 	}
 
 	/**
@@ -115,14 +122,15 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	/**
 	 * @return DtDefinition de l'objet métier
 	 */
+	@Override
 	public final DtDefinition getDtDefinition() {
 		return dtDefinitionRef.get();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final StrutsUiObject<O> get(final int index) {
-		StrutsUiObject<O> element = uiObjectByIndex.get(index);
+	public final UiObject<O> get(final int index) {
+		UiObject<O> element = uiObjectByIndex.get(index);
 		if (element == null) {
 			element = new StrutsUiObject<>(obtainDtList().get(index));
 			uiObjectByIndex.put(index, element);
@@ -142,8 +150,8 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	public int indexOf(final Object o) {
 		if (o instanceof DtObject) {
 			return indexOf((DtObject) o);
-		} else if (o instanceof StrutsUiObject) {
-			return indexOf((StrutsUiObject<O>) o);
+		} else if (o instanceof UiObject) {
+			return indexOf((UiObject<O>) o);
 		}
 		return super.indexOf(o);
 	}
@@ -152,7 +160,7 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	 * @param UiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOf(final StrutsUiObject<O> UiObject) {
+	private int indexOf(final UiObject<O> UiObject) {
 		Assertion.checkNotNull(UiObject);
 		//-----
 		return obtainDtList().indexOf(UiObject.getServerSideObject());
@@ -216,7 +224,7 @@ public abstract class AbstractUiList<O extends DtObject> extends AbstractList<Ui
 	/**
 	 * @return Liste des uiObjects bufferisés (potentiellement modifiés).
 	 */
-	protected final Collection<StrutsUiObject<O>> getUiObjectBuffer() {
+	protected final Collection<UiObject<O>> getUiObjectBuffer() {
 		return uiObjectByIndex.values();
 	}
 
