@@ -70,7 +70,6 @@ public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList
 
 	/**
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
-	 * @param validator Validateur à utilisé
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 */
 	@Override
