@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.engines.webservice.json.RestUiObject;
+import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
 /**
  * Objet d'IHM, fournit les valeurs formatés des champs de l'objet métier sous-jacent.
@@ -38,7 +38,7 @@ import io.vertigo.vega.engines.webservice.json.RestUiObject;
  * @author pchretien, npiedeloup
  * @param <D> Type de DtObject représenté par cet Input
  */
-public final class StrutsUiObject<D extends DtObject> extends RestUiObject<D> implements Map<String, Serializable> {
+public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> implements Map<String, Serializable> {
 
 	public StrutsUiObject(final D serverSideDto) {
 		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet());

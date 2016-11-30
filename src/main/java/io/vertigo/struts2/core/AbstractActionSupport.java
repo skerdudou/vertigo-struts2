@@ -39,9 +39,11 @@ import com.opensymphony.xwork2.Preparable;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.param.ParamManager;
+import io.vertigo.dynamo.kvstore.KVStoreManager;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.struts2.context.ContextCacheManager;
 import io.vertigo.struts2.exception.ExpiredContextException;
 
 /**
@@ -51,6 +53,10 @@ import io.vertigo.struts2.exception.ExpiredContextException;
  */
 public abstract class AbstractActionSupport extends ActionSupport implements ModelDriven<KActionContext>, Preparable, ServletResponseAware {
 	private static final long serialVersionUID = -1850868830308743394L;
+
+	/** Clé de la collection des contexts dans le KVStoreManager. */
+	public static final String CONTEXT_COLLECTION_NAME = "VActionContext";
+
 	/** Clé de context du UiUtil. */
 	public static final String UTIL_CONTEXT_KEY = "util";
 	/** Clé de context du mode. */
@@ -77,7 +83,9 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	private HttpServletResponse response;
 	private KActionContext context;
 	@Inject
-	private ContextCacheManager contextCacheManager;
+	private KVStoreManager kvStoreManager;
+	@Inject
+	private VTransactionManager transactionManager;
 	@Inject
 	private ParamManager paramManager;
 
@@ -104,7 +112,11 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 			if (ctxId == null) {
 				contextMiss(null);
 			} else {
-				context = contextCacheManager.get(ctxId);
+				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
+					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, KActionContext.class).get();
+					transactionWritable.commit();
+				}
+
 				if (context == null) {
 					contextMiss(ctxId);
 				}
@@ -115,7 +127,8 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 			initContextUrlParameters(request);
 			//TODO vérifier que l'action demandée n'attendait pas de context : il va etre recrée vide ce qui n'est pas bon dans certains cas.
 			preInitContext();
-			Assertion.checkState(context.containsKey(UTIL_CONTEXT_KEY), "Pour surcharger preInitContext vous devez rappeler les parents super.preInitContext(). Action: {0}", getClass().getSimpleName());
+			Assertion.checkState(context.containsKey(UTIL_CONTEXT_KEY), "Pour surcharger preInitContext vous devez rappeler les parents super.preInitContext(). Action: {0}",
+					getClass().getSimpleName());
 			initContext();
 		}
 	}
@@ -173,7 +186,10 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 */
 	public final void storeContext() {
 		context.makeUnmodifiable();
-		contextCacheManager.put(context);
+		try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
+			kvStoreManager.put(CONTEXT_COLLECTION_NAME, context.getId(), context);
+			transactionWritable.commit();
+		}
 	}
 
 	/** {@inheritDoc} */
