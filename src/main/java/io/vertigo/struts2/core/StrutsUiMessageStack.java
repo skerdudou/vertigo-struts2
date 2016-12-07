@@ -36,6 +36,9 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  */
 public final class StrutsUiMessageStack implements UiMessageStack {
+
+	private static final long serialVersionUID = 9216344511798624184L;
+
 	private final AbstractActionSupport actionSupport;
 
 	private static final String FIELD_LABEL_PREFIX = "<label>";
