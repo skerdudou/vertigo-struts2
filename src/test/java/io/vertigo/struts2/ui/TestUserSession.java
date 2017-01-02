@@ -1,4 +1,4 @@
-﻿package io.vertigo.struts2.ui;
+package io.vertigo.struts2.ui;
 
 import java.util.Locale;
 

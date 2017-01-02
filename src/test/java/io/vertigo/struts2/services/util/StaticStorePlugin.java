@@ -9,7 +9,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -28,7 +27,7 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin {
 	private final DtDefinition staticDtDefinition;
 	private final DtField idField;
 	private final DtField displayField;
-	private final DtList<DtObject> dtc;
+	private final DtList<Entity> dtc;
 
 	/**
 	 * A simpler storePlugin for static list.
@@ -54,7 +53,7 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin {
 		final String[] splittedValues = values.split("\\s*[,;|]\\s*");
 		for (final String splittedValue : splittedValues) {
 			final String[] keyLabel = splittedValue.split("\\s*=\\s*");
-			final DtObject dto = createDtObject(castToType(keyLabel[0], keyDataType), keyLabel[1]);
+			final Entity dto = createDtObject(castToType(keyLabel[0], keyDataType), keyLabel[1]);
 			dtc.add(dto);
 		}
 	}
@@ -74,8 +73,8 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin {
 		}
 	}
 
-	private DtObject createDtObject(final Object key, final String display) {
-		final DtObject dto = DtObjectUtil.createDtObject(staticDtDefinition);
+	private Entity createDtObject(final Object key, final String display) {
+		final Entity dto = Entity.class.cast(DtObjectUtil.createDtObject(staticDtDefinition));
 		staticDtDefinition.getDisplayField().get();
 		idField.getDataAccessor().setValue(dto, key);
 		displayField.getDataAccessor().setValue(dto, display);
@@ -117,13 +116,13 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		Assertion.checkArgument(uri.getCriteria() == null, "This store could only load all data, not {0}", uri.getCriteria());
 		//----
-		return (DtList<D>) dtc;
+		return (DtList<E>) dtc;
 	}
 
 }
