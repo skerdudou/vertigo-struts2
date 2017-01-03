@@ -44,6 +44,13 @@
 		<s:submit action="saveCastingAccueil" />
 	</s:div>
 </s:form>
+<s:form id="radioContextMdl">
+<h1>Test radio sur ContextMdl</h1>
+	<s:div layout="table">
+		<s:radio name="casting.movId" label="default" list="moviesMdl" listKey="movId" listValue="title"/>
+		<s:submit action="saveCastingAccueil" />
+	</s:div>
+</s:form>
 <s:form id="autocompleteContextList">
 <h1>Test sj:autocompleter sur ContextList</h1>
 	<s:div layout="table">

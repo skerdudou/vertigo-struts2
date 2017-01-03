@@ -249,19 +249,15 @@ public class TestUi {
 	public void testRadioOnContextMdl() throws InterruptedException {
 		testLogin();
 		driver.get(baseUrl + "/test/Accueil.do");
-		assertEquals("Test radio sur ContextMdl", waitElement(By.cssSelector("#radioContextMdl h1")).getText());
-		assertTrue(findElement(By.cssSelector("#radioContextMdl  label")).getText().matches("^Movie\\*$"));
+		assertEquals("Test radio sur ContextMdl", waitElement(By.cssSelector("#radioContextMdl > h1")).getText());
+		findElement(By.id("radioContextMdl_casting_movId1002")).click();
+		assertEquals("1002", findElement(By.id("radioContextMdl_casting_movId1002")).getAttribute("value"));
+		findElement(By.cssSelector("#radioContextMdl_saveCastingAccueil")).click();
 
-		final Select select = new Select(findElement(By.id("radioContextMdl_casting_movId")));
-		select.selectByVisibleText("Shinning");
-		assertEquals("Shinning", select.getFirstSelectedOption().getText());
-		findElement(By.id("radioContextMdl_saveCastingAccueil")).click();
-
-		final Select select2 = new Select(findElement(By.id("radioContextMdl_casting_movId")));
-		assertEquals("Shinning", select2.getFirstSelectedOption().getText());
+		assertEquals("1002", findElement(By.id("radioContextMdl_casting_movId1002")).getAttribute("value"));
 		findElement(By.id("changeMode_toReadAccueil")).click();
 
-		assertEquals("Shinning", findElement(By.id("radioContextMdl_casting_movId-1")).getText());
+		assertEquals("The Godfather", findElement(By.id("radioContextMdl_casting_movId")).getText());
 	}
 
 	@Test
