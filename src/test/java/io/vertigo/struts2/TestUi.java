@@ -172,7 +172,7 @@ public class TestUi {
 	public void testSimpleDisplayTable() throws InterruptedException {
 		testLogin();
 		driver.get(baseUrl + "/test/Accueil.do");
-		assertEquals("Test display:table sur ContextList", waitElement(By.xpath("(//form[@id='Accueil']/h1)[2]")).getText());
+		assertEquals("Test display:table sur ContextList", waitElement(By.xpath("(//form[@id='displayTable']/h1)")).getText());
 
 		findElement(By.linkText("Jour")).click();
 		assertEquals("Full metal jacket", findElement(By.xpath("//table[@id='item']/tbody/tr/td")).getText());

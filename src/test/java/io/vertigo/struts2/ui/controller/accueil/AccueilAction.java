@@ -2,7 +2,6 @@ package io.vertigo.struts2.ui.controller.accueil;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.struts2.core.ContextForm;
 import io.vertigo.struts2.core.ContextList;
@@ -85,12 +84,4 @@ public class AccueilAction extends AbstractTestActionSupport {
 	public String getPageName() {
 		return "Accueil";
 	}
-
-	private DtList<Movie> createOneElementList() {
-		final DtList<Movie> list = new DtList<>(Movie.class);
-		final Movie newMovie = new Movie();
-		list.add(newMovie);
-		return list;
-	}
-
 }
