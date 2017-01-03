@@ -55,9 +55,8 @@ public class DataBaseInitializer implements ComponentInitializer {
 	}
 
 	private void execSqlScript(final SqlConnection connection, final String scriptPath) {
-		try {
+		try (final BufferedReader in = new BufferedReader(new InputStreamReader(resourceManager.resolve(scriptPath).openStream()))) {
 			final StringBuilder crebaseSql = new StringBuilder();
-			final BufferedReader in = new BufferedReader(new InputStreamReader(resourceManager.resolve(scriptPath).openStream()));
 			String inputLine;
 			while ((inputLine = in.readLine()) != null) {
 				final String adaptedInputLine = inputLine.replaceAll("-- .*", "");//removed comments
@@ -69,7 +68,6 @@ public class DataBaseInitializer implements ComponentInitializer {
 					crebaseSql.setLength(0);
 				}
 			}
-			in.close();
 		} catch (final IOException e) {
 			throw WrappedException.wrapIfNeeded(e, "Can't exec script {0}", scriptPath);
 		}

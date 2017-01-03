@@ -322,6 +322,7 @@ public class TestUi {
 					return driver.findElement(byElement);
 				}
 			} catch (final Exception e) {
+				//do nothing
 			}
 			Thread.sleep(100);
 		} while (System.currentTimeMillis() - start < timeout);
