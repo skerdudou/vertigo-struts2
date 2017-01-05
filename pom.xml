@@ -210,18 +210,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.8</version>
-				<configuration>
-                    <excludes>
-                        <exclude>**/lib/*</exclude>
-                    </excludes>
-                </configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
