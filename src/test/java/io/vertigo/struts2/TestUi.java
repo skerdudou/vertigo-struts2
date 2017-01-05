@@ -68,7 +68,7 @@ public class TestUi {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		//startServer();
+		startServer();
 		driver = new JBrowserDriver(Settings.builder()
 				.timezone(Timezone.EUROPE_PARIS)
 				.headless(true) //use false for debug purpose
@@ -115,10 +115,10 @@ public class TestUi {
 		}
 	}
 
-	@Test
+	/*@Test
 	public void testServer() throws IOException, Exception {
 		server.join();
-	}
+	}*/
 
 	@Test
 	public void testLoadLoginPage() {
