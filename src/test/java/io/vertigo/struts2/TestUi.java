@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
@@ -67,10 +68,10 @@ public class TestUi {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		startServer();
+		//startServer();
 		driver = new JBrowserDriver(Settings.builder()
 				.timezone(Timezone.EUROPE_PARIS)
-				.headless(true) //use false for debug purpose
+				.headless(false) //use false for debug purpose
 				.build());
 	}
 
@@ -78,6 +79,7 @@ public class TestUi {
 		server = new Server(port);
 		final WebAppContext context = new WebAppContext(TestUi.class.getClassLoader().getResource("testWebApp/").getFile(), "/test");
 		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
+		context.setAttribute("jacoco.exclClassLoaders", "*");
 
 		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
 		context.setAttribute("org.eclipse.jetty.containerInitializers", jspInitializers());
@@ -113,11 +115,10 @@ public class TestUi {
 		}
 	}
 
-	/*@Test
+	@Test
 	public void testServer() throws IOException, Exception {
-		startServer();
 		server.join();
-	}*/
+	}
 
 	@Test
 	public void testLoadLoginPage() {
@@ -196,15 +197,15 @@ public class TestUi {
 		testLogin();
 		driver.get(baseUrl + "/test/Accueil.do");
 		assertEquals("Test select sur ContextList", waitElement(By.xpath("(//form/h1)[3]")).getText());
-		assertTrue(findElement(By.xpath("(//form/table/tbody/tr/th/label)[3]")).getText().matches("^Movie\\*$"));
-		final Select select = new Select(findElement(By.xpath("//form[3]/table/tbody/tr/td/select")));
-		assertEquals("Pulp FictionThe Good, the Bad and the UglyThe GodfatherFull metal jacketShinningMiseryL'exorciste", findElement(By.xpath("//form[3]/table/tbody/tr/td/select")).getText());
+		assertTrue(findElement(By.xpath("//form[@id='selectContextList']/table/tbody/tr/th/label")).getText().matches("^Movie\\*$"));
+		final Select select = new Select(findElement(By.xpath("//form[@id='selectContextList']/table/tbody/tr/td/select")));
+		assertEquals("Pulp Fiction, The Good, the Bad and the Ugly, The Godfather, Full metal jacket, Shinning, Misery, L'exorciste", getWebElementsAsString(select.getOptions()));
 		assertEquals("Pulp Fiction", select.getFirstSelectedOption().getText());
 		select.selectByVisibleText("Misery");
 		assertEquals("Misery", select.getFirstSelectedOption().getText());
 		findElement(By.name("action:saveCastingAccueil")).click();
 
-		final Select select2 = new Select(findElement(By.xpath("//form[3]/table/tbody/tr/td/select")));
+		final Select select2 = new Select(findElement(By.xpath("//form[@id='selectContextList']/table/tbody/tr/td/select")));
 		assertEquals("Misery", select2.getFirstSelectedOption().getText());
 		findElement(By.name("action:toReadAccueil")).click();
 
@@ -306,11 +307,17 @@ public class TestUi {
 		assertEquals("BLAISE", findElement(By.xpath("//form[@id='autocompleteContextMdl']/table/tbody/tr/td/span")).getText());
 	}
 
-	protected final WebElement waitElement(final By byElement) throws InterruptedException {
+	private String getWebElementsAsString(final List<WebElement> webElements) {
+		return webElements.stream()
+				.map(WebElement::getText)
+				.collect(Collectors.joining(", "));
+	}
+
+	private WebElement waitElement(final By byElement) throws InterruptedException {
 		return waitElement(byElement, 1000);
 	}
 
-	protected final WebElement waitElement(final By byElement, final long timeout) throws InterruptedException {
+	private WebElement waitElement(final By byElement, final long timeout) throws InterruptedException {
 		final long start = System.currentTimeMillis();
 		do {
 			try {
@@ -326,7 +333,7 @@ public class TestUi {
 		throw new AssertionError("Element non trouvé en " + timeout + "ms : " + byElement.toString());
 	}
 
-	protected final static boolean isElementPresent(final By by) {
+	private static boolean isElementPresent(final By by) {
 		try {
 			driver.findElement(by);
 			return true;
@@ -335,7 +342,7 @@ public class TestUi {
 		}
 	}
 
-	protected final static WebElement findElement(final By by) {
+	private static WebElement findElement(final By by) {
 		try {
 			return driver.findElement(by);
 		} catch (final org.openqa.selenium.NoSuchElementException e) {
