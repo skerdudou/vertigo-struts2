@@ -71,7 +71,7 @@ public class TestUi {
 		//startServer();
 		driver = new JBrowserDriver(Settings.builder()
 				.timezone(Timezone.EUROPE_PARIS)
-				.headless(false) //use false for debug purpose
+				.headless(true) //use false for debug purpose
 				.build());
 	}
 
