@@ -65,7 +65,7 @@ public final class ContextRef<O extends Serializable> {
 	 */
 	public O get() {
 		final Serializable value = action.getModel().get(contextKey);
-		if (value instanceof String[] && !String[].class.equals(valueClass)) { //cas ou la valeur a été sett�e depuis la request
+		if (value instanceof String[] && !String[].class.equals(valueClass)) { //cas ou la valeur a été settée depuis la request
 			final String firstValue = ((String[]) value).length > 0 ? ((String[]) value)[0] : null;
 			if (firstValue == null || firstValue.isEmpty()) { //depuis la request : empty == null
 				return null;

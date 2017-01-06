@@ -307,6 +307,28 @@ public class TestUi {
 		assertEquals("BLAISE", findElement(By.xpath("//form[@id='autocompleteContextMdl']/table/tbody/tr/td/span")).getText());
 	}
 
+	@Test
+	public void testDownload() throws InterruptedException {
+		testLogin();
+
+		driver.get(baseUrl + "/test/uploadFileAccueil.do");
+		driver.findElement(By.linkText("insee.csv")).click();
+
+	}
+
+	@Test
+	public void testUpload() throws InterruptedException {
+		testLogin();
+
+		final String fullPath = getClass().getResource("/data/insee.csv").getFile();
+		findElement(By.id("uploadFile_fileTest")).clear();
+		findElement(By.id("uploadFile_fileTest")).sendKeys(fullPath);
+		findElement(By.id("uploadFile_uploadFileAccueil")).click();
+
+		assertEquals("Fichier recu : insee.csv (application/octet-stream)", findElement(By.cssSelector("span")).getText());
+		assertEquals("Previous file : insee.csv (application/octet-stream)", findElement(By.id("uploadFile")).getText());
+	}
+
 	private String getWebElementsAsString(final List<WebElement> webElements) {
 		return webElements.stream()
 				.map(WebElement::getText)

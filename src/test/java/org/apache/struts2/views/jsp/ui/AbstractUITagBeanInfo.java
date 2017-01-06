@@ -56,7 +56,7 @@ public class AbstractUITagBeanInfo extends SimpleBeanInfo {
 
 			for (final Field field : AbstractUITag.class.getDeclaredFields()) {
 				final String fieldName = field.getName();
-				if (!"dynamicAttributes".equals(fieldName) && !field.isSynthetic()) {
+				if (!"dynamicAttributes".equals(fieldName) && !field.isSynthetic()) {//NPI : we need to exclude synthetic fields for jacoco coverage
 					final String setterName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 					final Method setter = AbstractUITag.class.getMethod(setterName, String.class);
 					descriptors.add(new PropertyDescriptor(fieldName, null, setter));

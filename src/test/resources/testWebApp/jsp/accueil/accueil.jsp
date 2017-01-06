@@ -8,6 +8,8 @@
 	<s:param name="subtitle">${pageName}</s:param>
 </s:include>
 
+<s:actionmessage/>
+
 <s:form id="layoutTable">
 <h1>Test div layout=table</h1>
 	<s:div layout="table">
@@ -88,8 +90,14 @@ Change mode :
 </s:else>
 </s:form>
 
-<s:form id="uploadFile" method="post" enctype="multipart/form-data" >
-<s:file name="test" theme="simple"/>
-<s:submit action="uploadFileAccueil" value="Upload"/>
-</s:form>
+	<s:url action="downloadFileAccueil" var="downloadFileLink">
+		<s:param name="CTX"><s:property value="CTX"/></s:param>
+	</s:url>
+	<a href="${downloadFileLink}">insee.csv</a>
+	
+	<s:form id="uploadFile" method="post" enctype="multipart/form-data" >
+		Previous file : <s:property value="fileTestVFile.fileName"/> (<s:property value="fileTestVFile.mimeType"/>)<br/>
+		<s:file name="fileTest" theme="simple" label="Test upload/download"/>
+		<s:submit action="uploadFileAccueil" value="Upload"/>
+	</s:form>
 <s:include value="/jsp/include/pageFooter.jsp" />

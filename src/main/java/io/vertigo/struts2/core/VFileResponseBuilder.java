@@ -54,8 +54,9 @@ public final class VFileResponseBuilder {
 	 * Envoi les données au client sous forme d'attachment.
 	 * @param vFile Fichier a envoyer
 	 */
-	public void send(final VFile vFile) {
+	public String send(final VFile vFile) {
 		send(vFile, true);
+		return null;
 	}
 
 	/**

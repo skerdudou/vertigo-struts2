@@ -1,19 +1,33 @@
 package io.vertigo.struts2.ui.controller.accueil;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.file.model.InputStreamBuilder;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.impl.file.model.StreamFile;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.VUserException;
+import io.vertigo.struts2.core.AbstractActionSupport.AcceptCtxQueryParam;
 import io.vertigo.struts2.core.ContextForm;
 import io.vertigo.struts2.core.ContextList;
 import io.vertigo.struts2.core.ContextListModifiable;
 import io.vertigo.struts2.core.ContextMdl;
 import io.vertigo.struts2.core.ContextRef;
+import io.vertigo.struts2.core.ContextVFile;
+import io.vertigo.struts2.core.GET;
 import io.vertigo.struts2.domain.movies.Movie;
 import io.vertigo.struts2.domain.people.Casting;
 import io.vertigo.struts2.domain.reference.Commune;
 import io.vertigo.struts2.services.movies.MovieServices;
 import io.vertigo.struts2.ui.controller.AbstractTestActionSupport;
+import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
 
+@AcceptCtxQueryParam
 public class AccueilAction extends AbstractTestActionSupport {
 
 	private static final long serialVersionUID = 1L;
@@ -25,6 +39,8 @@ public class AccueilAction extends AbstractTestActionSupport {
 	private final ContextMdl<Movie> moviesListMdl = new ContextMdl<>("moviesMdl", this);
 	private final ContextRef<String> communeId = new ContextRef<>("communeId", String.class, this);
 	private final ContextMdl<Commune> communeListMdl = new ContextMdl<>("communesMdl", this);
+
+	private final ContextVFile fileTestFileRef = new ContextVFile("fileTest", this);
 
 	@Inject
 	private MovieServices movieServices;
@@ -66,8 +82,30 @@ public class AccueilAction extends AbstractTestActionSupport {
 	}
 
 	public String doUploadFile() {
-		getModel();
+
+		if (!fileTestFileRef.exists()) {
+			throw new VUserException(new MessageText("Aucun fichier uploadé.", null));
+		}
+
+		final VFile vFile = fileTestFileRef.get();
+		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
 		return NONE;
+	}
+
+	/**
+	 * Exporte l'annuaire utilisateur.
+	 * @return redirection struts
+	 */
+	@GET
+	public String downloadFile() {
+		final VFile vFile = new StreamFile("insee.csv", "text/csv", new Date(), 1350470, new InputStreamBuilder() {
+			@Override
+			public InputStream createInputStream() throws IOException {
+				final String fileName = "/data/insee.csv";
+				return getClass().getResourceAsStream(fileName);
+			}
+		});
+		return createVFileResponseBuilder().send(vFile);
 	}
 
 	public String toRead() {
