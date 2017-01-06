@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
 public final class ContextRef<O extends Serializable> {
 	private final AbstractActionSupport action;
 	private final String contextKey;
-	private Class<O> valueClass;
+	private final Class<O> valueClass;
 
 	/**
 	 * Constructeur.
@@ -55,10 +55,6 @@ public final class ContextRef<O extends Serializable> {
 	 */
 	public void set(final O value) {
 		if (value != null) {
-			//TODO valueClass ne doit plus etre Nullable
-			if (valueClass == null) {
-				valueClass = (Class<O>) value.getClass();
-			}
 			Assertion.checkArgument(valueClass.isInstance(value), "Cette valeur n'est pas du bon type ({0} au lieu de {1})", value.getClass(), valueClass);
 		}
 		action.getModel().put(contextKey, value);
@@ -69,14 +65,6 @@ public final class ContextRef<O extends Serializable> {
 	 */
 	public O get() {
 		final Serializable value = action.getModel().get(contextKey);
-		//TODO valueClass ne doit plus etre Nullable
-		if (valueClass == null && value != null) {
-			if (value instanceof String[]) {
-				valueClass = (Class<O>) String.class;
-			} else {
-				valueClass = (Class<O>) value.getClass();
-			}
-		}
 		if (value instanceof String[] && !String[].class.equals(valueClass)) { //cas ou la valeur a été sett�e depuis la request
 			final String firstValue = ((String[]) value).length > 0 ? ((String[]) value)[0] : null;
 			if (firstValue == null || firstValue.isEmpty()) { //depuis la request : empty == null
