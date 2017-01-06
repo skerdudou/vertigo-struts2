@@ -109,18 +109,17 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 			final Object keyValue = keyField.getDataAccessor().getValue(dto);
 			final String labelValue = (String) labelField.getDataAccessor().getValue(dto);
 			final String labelEncoded = jsonEncode(labelValue);
-			sb
-					.append(sep)
+			sb.append(sep)
 					.append("{\"key\":")
-					.append("\"")
+					.append('\"')
 					.append(keyValue)
 					.append("\",\"value\":")
-					.append("\"")
+					.append('\"')
 					.append(labelEncoded)
 					.append("\"}");
 			sep = ", ";
 		}
-		sb.append("]");
+		sb.append(']');
 		return sb.toString();
 	}
 

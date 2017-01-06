@@ -149,9 +149,9 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	@Override
 	public int indexOf(final Object o) {
 		if (o instanceof DtObject) {
-			return indexOf((DtObject) o);
+			return indexOfDtObject((DtObject) o);
 		} else if (o instanceof UiObject) {
-			return indexOf((UiObject<O>) o);
+			return indexOfUiObject((UiObject<O>) o);
 		}
 		return super.indexOf(o);
 	}
@@ -160,7 +160,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @param UiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOf(final UiObject<O> UiObject) {
+	private int indexOfUiObject(final UiObject<O> UiObject) {
 		Assertion.checkNotNull(UiObject);
 		//-----
 		return obtainDtList().indexOf(UiObject.getServerSideObject());
@@ -170,7 +170,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @param dtObject DtObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOf(final DtObject dtObject) {
+	private int indexOfDtObject(final DtObject dtObject) {
 		Assertion.checkNotNull(dtObject);
 		//-----
 		return obtainDtList().indexOf(dtObject);
@@ -198,6 +198,25 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 			Assertion.checkState(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		}
 		return uiObject;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean equals(final Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o == null || this.getClass() != o.getClass()) {
+			return false;
+		}
+		final AbstractUiListUnmodifiable<O> other = AbstractUiListUnmodifiable.class.cast(o);
+		return uiObjectByIndex.equals(other.uiObjectByIndex);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int hashCode() {
+		return uiObjectByIndex.hashCode();
 	}
 
 	private Entity loadDto(final Object key) {

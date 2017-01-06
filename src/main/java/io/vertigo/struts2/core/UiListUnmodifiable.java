@@ -83,10 +83,9 @@ public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList
 		return dtList
 				.stream()
 				.limit(50) //we consider only the first 50 elements
-				.map(dto -> dto.toString())
+				.map(DtObject::toString)
 				.collect(Collectors.joining("; ",
-						"uiList(" + dtList.size() + " element(s) :",
-						")"));
+						"uiList(" + dtList.size() + " element(s) :", ")"));
 	}
 
 }

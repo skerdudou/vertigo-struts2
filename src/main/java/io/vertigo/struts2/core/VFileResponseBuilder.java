@@ -128,10 +128,10 @@ public final class VFileResponseBuilder {
 			utf8FileName = cleanFileName.getBytes("utf8"); //Utf8 fileName
 			sb.append(";filename*=UTF-8''");
 			for (final byte c : utf8FileName) {
-				if (isSimpleLetterOrDigit(c) || c == '.' || c == '-' || c == '_') {
+				if (c == '.' || c == '-' || c == '_' || isSimpleLetterOrDigit(c)) {
 					sb.append((char) c);
 				} else {
-					sb.append("%");
+					sb.append('%');
 					sb.append(Integer.toHexString(c & 0xff)); // we want byte as a char on one byte
 				}
 			}
