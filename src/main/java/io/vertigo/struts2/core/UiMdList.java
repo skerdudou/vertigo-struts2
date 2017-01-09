@@ -71,7 +71,7 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "uiMdList(" + dtListURIForMasterData.toString() + (lazyDtList != null ? ", loaded:" + lazyDtList.size() : "") + " )";
+		return "uiMdList(" + dtListURIForMasterData/*.toString()*/ + (lazyDtList != null ? ", loaded:" + lazyDtList.size() : "") + " )";
 	}
 
 	/** {@inheritDoc} */
