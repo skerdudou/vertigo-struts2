@@ -26,7 +26,6 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Result;
 import com.opensymphony.xwork2.UnknownHandler;
-import com.opensymphony.xwork2.XWorkException;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 
 import io.vertigo.struts2.impl.MethodUtil;
@@ -47,14 +46,14 @@ public class InjectParamsToActionMethodHandler implements UnknownHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public ActionConfig handleUnknownAction(final String namespace, final String actionName) throws XWorkException {
+	public ActionConfig handleUnknownAction(final String namespace, final String actionName) {
 		//Non pris en charge
 		return null;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Result handleUnknownResult(final ActionContext actionContext, final String actionName, final ActionConfig actionConfig, final String resultCode) throws XWorkException {
+	public Result handleUnknownResult(final ActionContext actionContext, final String actionName, final ActionConfig actionConfig, final String resultCode) {
 		//Non pris en charge
 		return null;
 	}
