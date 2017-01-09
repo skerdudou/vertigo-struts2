@@ -295,7 +295,7 @@ public class TestUi {
 		findElement(By.xpath("//form[@id='autocompleteContextMdl']/table/tbody/tr/td/input[2]")).clear();
 		findElement(By.xpath("//form[@id='autocompleteContextMdl']/table/tbody/tr/td/input[2]")).sendKeys("blai");
 
-		assertEquals("BLAISE", waitElement(By.cssSelector("ul.ui-autocomplete span.col"), 5000).getText());
+		assertEquals("BLAISE", waitElement(By.cssSelector("ul.ui-autocomplete span.col"), 10000).getText());
 
 		findElement(By.cssSelector("ul.ui-autocomplete span.col")).click();
 		assertEquals("BLAISE", findElement(By.xpath("//form[@id='autocompleteContextMdl']/table/tbody/tr/td/input[2]")).getAttribute("value"));
