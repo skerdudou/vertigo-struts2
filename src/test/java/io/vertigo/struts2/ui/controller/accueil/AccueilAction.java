@@ -1,15 +1,12 @@
 package io.vertigo.struts2.ui.controller.accueil;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
+import java.io.File;
 
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.file.model.StreamFile;
+import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport.AcceptCtxQueryParam;
@@ -98,13 +95,9 @@ public class AccueilAction extends AbstractTestActionSupport {
 	 */
 	@GET
 	public String downloadFile() {
-		final VFile vFile = new StreamFile("insee.csv", "text/csv", new Date(), 1350470, new InputStreamBuilder() {
-			@Override
-			public InputStream createInputStream() throws IOException {
-				final String fileName = "/data/insee.csv";
-				return getClass().getResourceAsStream(fileName);
-			}
-		});
+		final String fullPath = getClass().getResource("/data/insee.csv").getFile();
+		final File localFile = new File(fullPath);
+		final VFile vFile = new FSFile("insee.csv", "text/csv", localFile);
 		return createVFileResponseBuilder().send(vFile);
 	}
 
