@@ -308,12 +308,15 @@ public class TestUi {
 	}
 
 	@Test
-	public void testDownload() throws InterruptedException {
+	public void testDownload() throws Exception {
 		testLogin();
 
-		driver.get(baseUrl + "/test/uploadFileAccueil.do");
-		driver.findElement(By.linkText("insee.csv")).click();
+		final FileDownloader4Tests fileDownloader4Tests = new FileDownloader4Tests(driver);
+		final WebElement downloadLink = findElement(By.linkText("insee.csv"));
+		final String downloadedFileAbsoluteLocation = fileDownloader4Tests.downloadFile(downloadLink);
 
+		assertTrue(new File(downloadedFileAbsoluteLocation).exists());
+		assertEquals(fileDownloader4Tests.getHTTPStatusOfLastDownloadAttempt(), 200);
 	}
 
 	@Test
