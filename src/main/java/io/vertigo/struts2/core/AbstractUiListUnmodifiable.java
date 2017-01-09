@@ -85,6 +85,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Class<O> getObjectType() {
 		return (Class<O>) ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
@@ -157,13 +158,13 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	}
 
 	/**
-	 * @param UiObject UiObject recherché
+	 * @param uiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	private int indexOfUiObject(final UiObject<O> UiObject) {
-		Assertion.checkNotNull(UiObject);
+	private int indexOfUiObject(final UiObject<O> uiObject) {
+		Assertion.checkNotNull(uiObject);
 		//-----
-		return obtainDtList().indexOf(UiObject.getServerSideObject());
+		return obtainDtList().indexOf(uiObject.getServerSideObject());
 	}
 
 	/**
@@ -198,25 +199,6 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 			Assertion.checkState(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		}
 		return uiObject;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean equals(final Object o) {
-		if (o == this) {
-			return true;
-		}
-		if (o == null || this.getClass() != o.getClass()) {
-			return false;
-		}
-		final AbstractUiListUnmodifiable<O> other = AbstractUiListUnmodifiable.class.cast(o);
-		return uiObjectByIndex.equals(other.uiObjectByIndex);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode() {
-		return uiObjectByIndex.hashCode();
 	}
 
 	private Entity loadDto(final Object key) {
