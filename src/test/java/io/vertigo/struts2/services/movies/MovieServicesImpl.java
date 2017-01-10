@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
+import io.vertigo.dynamo.store.criteria2.Criterions;
 import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.struts2.dao.movies.MovieDAO;
 import io.vertigo.struts2.domain.movies.Movie;
@@ -28,6 +28,6 @@ public class MovieServicesImpl implements MovieServices {
 	@Override
 	@Transactional
 	public DtList<Movie> getMovies(final DtListState dtListState) {
-		return movieDAO.getList(new FilterCriteriaBuilder().build(), dtListState.getMaxRows().orElse(50));
+		return movieDAO.findAll(Criterions.alwaysTrue(), dtListState.getMaxRows().orElse(50));
 	}
 }
