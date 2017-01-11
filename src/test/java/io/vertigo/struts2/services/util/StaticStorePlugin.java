@@ -13,7 +13,7 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
-import io.vertigo.dynamo.store.criteria2.Criteria2;
+import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -109,7 +109,7 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		throw new UnsupportedOperationException();
 	}

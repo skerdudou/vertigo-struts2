@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.store.criteria2.Criterions;
+import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.struts2.dao.movies.MovieDAO;
 import io.vertigo.struts2.domain.movies.Movie;

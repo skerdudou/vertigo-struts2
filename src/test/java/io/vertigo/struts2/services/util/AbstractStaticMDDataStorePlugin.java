@@ -10,7 +10,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
-import io.vertigo.dynamo.store.criteria2.Criteria2;
+import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
@@ -83,7 +83,7 @@ public class AbstractStaticMDDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		throw new UnsupportedOperationException();
 	}
 

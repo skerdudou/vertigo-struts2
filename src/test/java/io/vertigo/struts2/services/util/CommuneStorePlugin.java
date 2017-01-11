@@ -11,7 +11,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
-import io.vertigo.dynamo.store.criteria2.Criteria2;
+import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.domain.DtDefinitions;
 import io.vertigo.struts2.domain.reference.Commune;
@@ -54,7 +54,7 @@ public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
 	}
 
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -63,7 +63,8 @@ public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
 	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
-		Assertion.checkArgument(DtDefinitions.Definitions.Commune.name().equals(dtDefinition.getClassSimpleName()), "This store should be use for Commune only, not {0}", dtDefinition.getClassSimpleName());
+		Assertion.checkArgument(DtDefinitions.Definitions.Commune.name().equals(dtDefinition.getClassSimpleName()), "This store should be use for Commune only, not {0}",
+				dtDefinition.getClassSimpleName());
 		Assertion.checkArgument(uri.getCriteria() == null, "This store could only load all data, not {0}", uri.getCriteria());
 		//----
 		return (DtList<D>) loadAllCommunes();
