@@ -5,18 +5,19 @@
  */
 -->
 <#assign currentLayout = controlLayout_type?default('none') />	
+<#assign submitcolspan = parameters.dynamicAttributes['submitcolspan']?default(1)?number />	
 <#if currentLayout = 'table'>
 	<#include "/${parameters.templateDir}/${parameters.expandTheme}/controlheader-trlogic.ftl" />
-				<td <#t/>
-	<#if parameters.submitcolspan??><#t/>
-	    colspan="${parameters.submitcolspan?html}"<#t/>	    
+			<td <#rt/>
+	<#if parameters.dynamicAttributes['submitcolspan']??><#t/>
+	    colspan="${submitcolspan}" <#t/>	    
 	<#t/></#if>
 	<#if parameters.align??><#t/>
 	    align="${parameters.align?html}"<#t/>
 	<#t/></#if>
 	><#t/>
 	<#if controlLayout_tablecolspan?exists >
-    	<#assign columnCount = controlLayout_currentColumnCount + parameters.submitcolspan?default(1) />	
+    	<#assign columnCount = controlLayout_currentColumnCount + submitcolspan?default(1) />	
 		<#-- update the value of the controlLayout_currentColumnCount bean on the value stack. -->
 		${stack.setValue('#controlLayout_currentColumnCount', columnCount)}<#t/>
 	</#if>
