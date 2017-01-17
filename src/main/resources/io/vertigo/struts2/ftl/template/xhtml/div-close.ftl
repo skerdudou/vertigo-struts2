@@ -6,7 +6,13 @@
 -->
 <#if parameters.dynamicAttributes['layout']??>
     <#if parameters.dynamicAttributes['layout'] = "table" > 
-    </table><#lt/>
+    <#assign columnCount = controlLayout_currentColumnCount />	
+	<#assign tablecolspan = controlLayout_tablecolspan />	
+	<#if (columnCount > 0 && columnCount < tablecolspan) >
+		<td colspan="${tablecolspan-columnCount}">&nbsp;</td>
+		</tr><#-- Write out the closing tr. -->		
+	</#if>
+	 </table><#lt/>
     <#else>
     <#-- none -->
     </#if>
