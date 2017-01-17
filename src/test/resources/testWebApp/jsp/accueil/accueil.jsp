@@ -100,4 +100,15 @@ Change mode :
 		<s:file name="fileTest" theme="simple" label="Test upload/download"/>
 		<s:submit action="uploadFileAccueil" value="Upload"/>
 	</s:form>
+		
+	<s:form id="saveAjax">
+		<h1>Test Ajax Submit</h1>		
+		<span>currentDate ${currentDate}</span>
+		<s:div layout="table">
+			<s:textfield name="movie.title" label="default" />
+			<s:textfield name="movie.year" label="default" />
+			<sj:submit id="ajaxButton" action="saveAccueil" targets="saveAjax" replaceTarget="true" />
+		</s:div>
+	</s:form>
+	
 <s:include value="/jsp/include/pageFooter.jsp" />

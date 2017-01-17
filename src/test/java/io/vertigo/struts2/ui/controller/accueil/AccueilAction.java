@@ -1,6 +1,7 @@
 package io.vertigo.struts2.ui.controller.accueil;
 
 import java.io.File;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -37,6 +38,8 @@ public class AccueilAction extends AbstractTestActionSupport {
 	private final ContextRef<String> communeId = new ContextRef<>("communeId", String.class, this);
 	private final ContextMdl<Commune> communeListMdl = new ContextMdl<>("communesMdl", this);
 
+	private final ContextRef<String> currentDate = new ContextRef<>("currentDate", String.class, this);
+
 	private final ContextVFile fileTestFileRef = new ContextVFile("fileTest", this);
 
 	@Inject
@@ -51,10 +54,12 @@ public class AccueilAction extends AbstractTestActionSupport {
 		moviesListMdl.publish(Movie.class, null);
 		communeListMdl.publish(Commune.class, null);
 		toModeCreate();
+		currentDate.set(new Date().toString());
 	}
 
 	public String doSave() {
 		movie.readDto();
+		currentDate.set(new Date().toString());
 		return NONE;
 	}
 

@@ -20,6 +20,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -330,6 +331,24 @@ public class TestUi {
 
 		assertEquals("Fichier recu : insee.csv (application/octet-stream)", findElement(By.cssSelector("span")).getText());
 		assertEquals("Previous file : insee.csv (application/octet-stream)", findElement(By.id("uploadFile")).getText());
+	}
+
+	@Test
+	public void testPostAjaxForm() throws InterruptedException {
+		testLogin();
+
+		assertEquals("Test Ajax Submit", waitElement(By.cssSelector("#saveAjax > h1")).getText());
+		findElement(By.id("saveAjax_movie_title")).clear();
+		findElement(By.id("saveAjax_movie_title")).sendKeys("Test 3");
+		findElement(By.id("saveAjax_movie_year")).clear();
+		findElement(By.id("saveAjax_movie_year")).sendKeys("2025");
+		final String oldDate = waitElement(By.cssSelector("#saveAjax > span")).getText();
+		findElement(By.id("ajaxButton")).click();
+
+		assertEquals("Test 3", findElement(By.id("saveAjax_movie_title")).getAttribute("value"));
+		assertEquals("2 025", findElement(By.id("saveAjax_movie_year")).getAttribute("value"));
+		final String newDate = waitElement(By.cssSelector("#saveAjax > span")).getText();
+		Assert.assertNotEquals(oldDate, newDate);
 	}
 
 	private String getWebElementsAsString(final List<WebElement> webElements) {
