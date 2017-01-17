@@ -20,7 +20,6 @@ package io.vertigo.struts2.impl.interceptor;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 import io.vertigo.lang.VUserException;
@@ -42,10 +41,12 @@ public class VUserExceptionInterceptor extends AbstractInterceptor {
 		} catch (final ValidationUserException e) {
 			final AbstractActionSupport action = (AbstractActionSupport) actionInvocation.getAction();
 			e.flushToUiMessageStack(action.getUiMessageStack());
+			action.getModel().markDirty();
 			return Action.NONE;
 		} catch (final VUserException e) {
-			final ActionSupport action = (ActionSupport) actionInvocation.getAction();
-			action.addActionError(e.getMessage());
+			final AbstractActionSupport action = (AbstractActionSupport) actionInvocation.getAction();
+			action.getUiMessageStack().error(e.getMessage());
+			action.getModel().markDirty();
 			return Action.NONE;
 		}
 	}

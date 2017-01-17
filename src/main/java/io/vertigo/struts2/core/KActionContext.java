@@ -38,12 +38,14 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	/** Clée de l'id de context dans le context. */
 	public static final String CTX = "CTX";
 	private static final long serialVersionUID = 2850788652438173312L;
+	private static final String INPUT_CTX = "INPUT_CTX";
 
 	//Index UiObject et DtObject vers clé de context.
 	private final Map<Serializable, String> reverseUiObjectIndex = new HashMap<>();
 	//Index UiList et DtList vers clé de context. //identity HashMap because two empty list aren't the same
 	private final Map<UiList<?>, String> reverseUiListIndex = new IdentityHashMap<>();
 	private boolean unmodifiable; //initialisé à false
+	private boolean dirty = false;
 
 	/**
 	 * Constructeur.
@@ -182,7 +184,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 		Assertion.checkArgument(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
 		//-----
 		if (CTX.equals(key)) { //struts tente de mettre a jour la clé lors de la reception de la request
-			return value;
+			return super.put(INPUT_CTX, value);
 		}
 		if (value instanceof UiObject) {
 			reverseUiObjectIndex.put(value, key);
@@ -202,7 +204,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	}
 
 	/**
-	 * G�n�re un nouvel Id et passe le context en modifiable.
+	 * Génère un nouvel Id et passe le context en modifiable.
 	 */
 	public void makeModifiable() {
 		unmodifiable = false;
@@ -213,7 +215,25 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 * passe le context en non-modifiable.
 	 */
 	public void makeUnmodifiable() {
+		Assertion.checkState(!dirty, "Can't fixed a dirty context");
+		//-----
 		super.put(CTX, UUID.randomUUID().toString());
 		unmodifiable = true;
+	}
+
+	/**
+	 * Mark this context as Dirty : shouldn't be stored and keep old id.
+	 */
+	public void markDirty() {
+		super.put(CTX, ((String[]) super.get(INPUT_CTX))[0]);
+		unmodifiable = true;
+		dirty = true;
+	}
+
+	/**
+	 * @return if context dirty : shouldn't be stored and keep old id
+	 */
+	public boolean isDirty() {
+		return dirty;
 	}
 }

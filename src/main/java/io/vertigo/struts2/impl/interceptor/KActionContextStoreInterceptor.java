@@ -55,7 +55,9 @@ public class KActionContextStoreInterceptor extends AbstractInterceptor {
 		@Override
 		public void beforeResult(final ActionInvocation actionInvocation, final String resultCode) {
 			final AbstractActionSupport action = (AbstractActionSupport) actionInvocation.getAction();
-			action.storeContext();
+			if (!action.getModel().isDirty()) {
+				action.storeContext();
+			}
 		}
 	}
 }
