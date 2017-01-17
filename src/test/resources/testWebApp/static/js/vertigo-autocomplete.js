@@ -1,26 +1,12 @@
 /*******************************************************************************
- * Methodes utilis�es pour l'autocompleter
+ * Methodes utilisées pour l'autocompleter
  ******************************************************************************/
 
-jQuery(document).ready(function () {
-	if (jQuery.ui.autocomplete && jQuery.ui.autocomplete.prototype) {
-		jQuery.ui.autocomplete.prototype._renderItem = function( ul, item) {
-			item.value = item.value.replace(/\|/g, ' - ');
-			var t = formatAutocomplete(item.label.replace(/\|/g, '</span><span class=\'col\'>'), this.term);
-			return $( "<li></li>" )
-	        	.data( "item.autocomplete", item )
-	        	.append( "<a><span class='col'>" + t + "</span></a>" )
-	        	.appendTo( ul );
-			};
-	}
-});
 
 
 function initAutocompleter(myAutocompleteKeyName, myAutocompleteName, myAutocompleteIconName, loadMinimumCount) {
-	jQuery(myAutocompleteName).on( "autocompleteclose", function( event, ui ) { 
-		jQuery(myAutocompleteName).autocomplete( 'option',  'minLength', loadMinimumCount);
-	});
-	
+	/** Complete le comportement de jQuery Autocompleter pour une meilleur UX */
+	// Valide sur ENTER
 	$(myAutocompleteName).keyup(function(event) {
 		if ($(myAutocompleteKeyName).val() != "") {			
 	        if (!event.ctrlKey && !event.metaKey && !event.altKey && event.which != 13) {
@@ -41,12 +27,34 @@ function initAutocompleter(myAutocompleteKeyName, myAutocompleteName, myAutocomp
 	        }
 	    }
 	});
+	
+	// Remet la longeur min de saisie à la valeur par défaut (pour le cas du clic sur l'icon 
+	jQuery(myAutocompleteName).on( "autocompleteclose", function( event, ui ) { 
+		jQuery(myAutocompleteName).autocomplete( 'option',  'minLength', loadMinimumCount);
+	});
+	
+	// Un click sur l'icon force la recherche, quelque soit les caractères saisis
 	jQuery(myAutocompleteIconName).click(function() {
 		var myAutocomplete = jQuery(myAutocompleteName);
 		myAutocomplete.autocomplete( 'option',  'minLength', 0);
 		myAutocomplete.autocomplete( 'search',  myAutocomplete.val());	    
 	});
 };
+
+
+jQuery(document).ready(function () {
+	if (jQuery.ui.autocomplete && jQuery.ui.autocomplete.prototype) {
+		//transforme le rendu multi colonne de l'autocomplete de | à UL LI SPAN.col
+		jQuery.ui.autocomplete.prototype._renderItem = function( ul, item) {
+			item.value = item.value.replace(/\|/g, ' - ');
+			var t = formatAutocomplete(item.label.replace(/\|/g, '</span><span class=\'col\'>'), this.term);
+			return $( "<li></li>" )
+	        	.data( "item.autocomplete", item )
+	        	.append( "<a><span class='col'>" + t + "</span></a>" )
+	        	.appendTo( ul );
+			};
+	}
+});
 
 function formatAutocomplete(itemValue, term) {
 	var sLabel = itemValue;

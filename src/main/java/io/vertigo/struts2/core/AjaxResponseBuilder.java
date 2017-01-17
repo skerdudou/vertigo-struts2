@@ -63,7 +63,7 @@ public final class AjaxResponseBuilder {
 
 	/**
 	 * Envoi du contenu HTML brut.
-	 * Les elements HTML identifi�s sont remplacés, le code script est interpr�té.
+	 * Les elements HTML identifiés sont remplacés, le code script est interprété.
 	 * @param content Contenu.
 	 * @return AjaxResponseBuilder
 	 */
