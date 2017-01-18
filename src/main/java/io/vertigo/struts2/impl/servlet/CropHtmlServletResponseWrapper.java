@@ -9,7 +9,7 @@ import io.vertigo.vega.impl.servlet.filter.AbstractHttpServletResponseWrapper;
  * Impl of HttpServletResponseWrapper to intercept and return content as String.
  * @author npiedeloup
  */
-class CropHtmlServletResponseWrapper extends AbstractHttpServletResponseWrapper implements AutoCloseable {
+class CropHtmlServletResponseWrapper extends AbstractHttpServletResponseWrapper {
 
 	/**
 	 * Constructeur qui crée un adapteur de ServletResponse wrappant la response spécifiée.
