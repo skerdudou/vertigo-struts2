@@ -8,18 +8,17 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
 /**
- * Implémentation de ServletOutputStream qui fonctionne avec le AjaxFragmentResponseStream.
+ * Impl of ServletOutputStream to intercept and return content as String.
  * @author npiedeloup
  */
-class AjaxFragmentResponseStream extends ServletOutputStream {
+class CropHtmlResponseStream extends ServletOutputStream {
 	private final OutputStream stream;
 
 	/**
 	 * Construit un servlet output stream associé avec la réponse spécifiée.
 	 * @param response javax.servlet.http.HttpServletResponse
-	 * @param compressionThreshold int
 	 */
-	AjaxFragmentResponseStream() {
+	CropHtmlResponseStream() {
 		super();
 		stream = new ByteArrayOutputStream();
 	}
